@@ -1,30 +1,10 @@
 """
-Modul pre triedu sprite - predstavuje klasický obrázok, bez animácií.
+Modul pre všetky sprite.
 """
 
-from pathlib import Path
-import pygame
+from triedy.sprite.sprite import Sprite
+from triedy.sprite.animovany_sprite import AnimovanySprite
+from triedy.sprite.osvetleny_sprite import OsvetlenySprite
 
-
-class Sprite(pygame.sprite.Sprite):
-    """
-    Predstavuje klasický obrázok, bez animácií.
-    """
-
-    def __init__(
-        self, pozicia: tuple[int, int], velkost: tuple[int, int], cesta_k_obrazku: Path
-    ):
-        super().__init__()
-        self.image = pygame.image.load(cesta_k_obrazku).convert_alpha()
-        self.image = pygame.transform.scale(self.image, velkost)
-
-        self.rect = self.image.get_rect()
-        self.rect.x = pozicia[0]
-        self.rect.y = pozicia[1]
-
-    def zmenit_obrazok(self, novy_obrazok: pygame.Surface):
-        """
-        Setter pre obrázok spritu.
-        """
-
-        self.image = novy_obrazok
+# čo sa má importovať keď použijem wildcard import
+__all__ = ["Sprite", "AnimovanySprite", "OsvetlenySprite"]

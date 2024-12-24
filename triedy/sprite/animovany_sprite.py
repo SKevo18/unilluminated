@@ -1,7 +1,3 @@
-"""
-Modul pre triedu animovaného sprite - obsahuje sekvenciu obrázkov ktoré sa postupne menia.
-"""
-
 from pathlib import Path
 import pygame
 
@@ -53,4 +49,5 @@ class AnimovanySprite(OsvetlenySprite):
         self.index %= len(self.CACHE_ANIMACII[self.animacia_id])
 
         self.zmenit_obrazok(self.CACHE_ANIMACII[self.animacia_id][self.index])
-        self._vykresli_svetlo()
+
+        super().update()
