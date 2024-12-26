@@ -13,10 +13,13 @@ class OsvetlenySprite(Sprite):
     """
 
     def __init__(
-        self, pozicia: tuple[int, int], velkost: tuple[int, int], cesta_k_obrazku: Path
+        self,
+        pozicia: tuple[int, int],
+        velkost: tuple[int, int],
+        cesta_k_obrazku: Path | str,
     ):
         super().__init__(pozicia, velkost, cesta_k_obrazku)
-        self.uroven_svetla = 1.0
+        self.uroven_svetla = 0.0
         self.originalny_obrazok: pygame.Surface = (
             self.image.copy()
         )  # pred aplikovaním svetla
@@ -29,3 +32,6 @@ class OsvetlenySprite(Sprite):
 
     def update(self):
         self._vykresli_svetlo()
+        self.uroven_svetla += 0.01
+        if self.uroven_svetla >= 1.0:
+            self.uroven_svetla = 0.0

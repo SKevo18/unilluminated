@@ -1,14 +1,19 @@
 import typing as t
+from pathlib import Path
 
 import pygame
-import pygame_widgets.button
 
-class Tlacidlo(pygame_widgets.button.Button):
-    def __init__(self, okno: pygame.Surface, pozicia: tuple[int, int],  text: str, po_kliknuti: t.Callable):
-        super().__init__(
-            okno, pozicia[0], pozicia[1], 300, 150, text=text,
-            fontSize=50, margin=20,
-            inactiveColour=(255, 0, 0),
-            pressedColour=(0, 255, 0), radius=20,
-            onClick=po_kliknuti
+from triedy.sprite import Sprite
+
+
+class Tlacidlo(Sprite):
+    def __init__(self, pozicia: tuple[int, int], text: str, po_kliknuti: t.Callable):
+        super().__init__(pozicia, (300, 150), Path("ui") / "tlacidlo.png")
+        self.text = text
+        self.po_kliknuti = po_kliknuti
+
+    def update(self):
+        super().update()
+        self.image.blit(
+            pygame.font.Font(None, 50).render(self.text, True, (0, 0, 0)), (10, 10)
         )

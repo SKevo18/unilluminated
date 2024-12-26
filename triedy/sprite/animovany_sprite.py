@@ -1,6 +1,7 @@
 from pathlib import Path
 import pygame
 
+from triedy.sprite.sprite import ASSETY_ROOT
 from triedy.sprite.osvetleny_sprite import OsvetlenySprite
 
 
@@ -16,14 +17,14 @@ class AnimovanySprite(OsvetlenySprite):
         animacia_id: str,
         pozicia: tuple[int, int],
         velkost: tuple[int, int],
-        cesta_k_obrazkom: Path,
+        cesta_k_obrazkom: Path | str,
     ):
         super().__init__(pozicia, velkost, cesta_k_obrazkom)
         self.animacia_id = animacia_id
         self.index = 0
 
     @classmethod
-    def nacitaj_animacie(cls, kluc: str, cesta_k_obrazkom: Path):
+    def nacitaj_animacie(cls, kluc: str, cesta_k_obrazkom: Path | str):
         """
         Načíta animácie z daného adresára pod určitým kľúčom.
 
@@ -34,7 +35,7 @@ class AnimovanySprite(OsvetlenySprite):
             return cls.CACHE_ANIMACII[kluc]
 
         cls.CACHE_ANIMACII[kluc] = []
-        for obrazok in cesta_k_obrazkom.iterdir():
+        for obrazok in (ASSETY_ROOT / cesta_k_obrazkom).iterdir():
             obrazok = pygame.image.load(obrazok).convert_alpha()
             cls.CACHE_ANIMACII[kluc].append(obrazok)
 

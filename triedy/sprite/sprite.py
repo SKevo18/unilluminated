@@ -1,6 +1,8 @@
 from pathlib import Path
 import pygame
 
+ASSETY_ROOT = Path(__file__).parent.parent.parent / "assety"
+
 
 class Sprite(pygame.sprite.Sprite):
     """
@@ -8,10 +10,13 @@ class Sprite(pygame.sprite.Sprite):
     """
 
     def __init__(
-        self, pozicia: tuple[int, int], velkost: tuple[int, int], cesta_k_obrazku: Path
+        self,
+        pozicia: tuple[int, int],
+        velkost: tuple[int, int],
+        cesta_k_obrazku: Path | str,
     ):
         super().__init__()
-        self.image = pygame.image.load(cesta_k_obrazku).convert_alpha()
+        self.image = pygame.image.load(ASSETY_ROOT / cesta_k_obrazku).convert_alpha()
         self.image = pygame.transform.scale(self.image, velkost)
 
         self.rect = self.image.get_rect()
