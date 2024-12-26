@@ -1,3 +1,5 @@
+import typing as t
+
 from pathlib import Path
 import pygame
 
@@ -13,11 +15,14 @@ class Sprite(pygame.sprite.Sprite):
         self,
         pozicia: tuple[int, int],
         velkost: tuple[int, int],
-        cesta_k_obrazku: Path | str,
+        cesta_k_obrazku: t.Optional[Path | str] = None,
     ):
         super().__init__()
         self.velkost = velkost
-        self.image = self.nacitaj_obrazok(cesta_k_obrazku)
+        if cesta_k_obrazku:
+            self.image = self.nacitaj_obrazok(cesta_k_obrazku)
+        else:
+            self.image = pygame.Surface(velkost, pygame.SRCALPHA)
 
         self.rect = self.image.get_rect()
         self.rect.x = pozicia[0]
@@ -34,7 +39,7 @@ class Sprite(pygame.sprite.Sprite):
 
         return obrazok
 
-    def spracuj_event(self, event: pygame.event.Event):
+    def spracuj_event(self, _: pygame.event.Event):
         """
         Spracuje event z hlavnej hernej slučky.
         """

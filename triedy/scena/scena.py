@@ -9,7 +9,7 @@ class Scena(pygame.sprite.Group):
     Všeobecná trieda pre scénu.
     """
 
-    def __init__(self, *sprity: Sprite):
+    def __init__(self, *sprity: Sprite | pygame.sprite.Group):
         super().__init__(*sprity)
 
     @classmethod

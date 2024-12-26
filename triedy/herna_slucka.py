@@ -8,7 +8,7 @@ import pygame
 import pygame_widgets
 
 import nastavenia as n
-from triedy.scena import ManazerScen, HlavneMenu, Level1
+from triedy.scena import ManazerScen, HlavneMenu, Nastavenia, Level1
 from triedy.sprite.sprite import Sprite
 
 
@@ -77,7 +77,7 @@ class HernaSlucka:
         """
         Načíta všetky scény a nastaví prvú scénu ako aktuálnu.
         """
-        ManazerScen.VSETKY_SCENY = [HlavneMenu(), Level1()]
+        ManazerScen.VSETKY_SCENY = [HlavneMenu(), Nastavenia(), Level1()]
         ManazerScen.zmen_scenu(0)
 
     @staticmethod

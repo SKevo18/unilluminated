@@ -26,7 +26,7 @@ class ManazerScen:
         try:
             return ManazerScen.VSETKY_SCENY[ManazerScen.index_aktualnej_sceny]
         except IndexError:
-            raise ValueError("Aktuálna scéna nie je nastavená!")
+            raise ValueError(f"Index aktuálnej scény ({ManazerScen.index_aktualnej_sceny}) neexistuje!")
 
     @staticmethod
     def update():
