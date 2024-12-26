@@ -1,3 +1,4 @@
+import typing as t
 from pathlib import Path
 
 import pygame
@@ -14,9 +15,9 @@ class OsvetlenySprite(Sprite):
 
     def __init__(
         self,
-        pozicia: tuple[int, int],
-        velkost: tuple[int, int],
-        cesta_k_obrazku: Path | str,
+        pozicia: t.Tuple[int, int],
+        velkost = (16, 16),
+        cesta_k_obrazku: t.Optional[t.Union[Path, str]] = None,
     ):
         super().__init__(pozicia, velkost, cesta_k_obrazku)
         self.uroven_svetla = 0.0

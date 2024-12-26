@@ -16,7 +16,7 @@ class ZaskrtavaciePole(pygame.sprite.Group):
 
     def __init__(
         self,
-        pozicia: tuple[int, int],
+        pozicia: t.Tuple[int, int],
         radius: int,
         text: str,
         po_kliknuti: t.Callable[[bool], None],
@@ -42,7 +42,7 @@ class ZaskrtavaciePoleBox(Sprite):
 
     def __init__(
         self,
-        pozicia: tuple[int, int],
+        pozicia: t.Tuple[int, int],
         radius: int,
         po_kliknuti: t.Callable[[bool], None],
         zaskrtnute: bool = False,

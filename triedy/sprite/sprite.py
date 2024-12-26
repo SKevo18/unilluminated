@@ -13,22 +13,21 @@ class Sprite(pygame.sprite.Sprite):
 
     def __init__(
         self,
-        pozicia: tuple[int, int],
-        velkost: tuple[int, int],
-        cesta_k_obrazku: t.Optional[Path | str] = None,
+        pozicia: t.Tuple[int, int],
+        velkost=(16, 16),
+        cesta_k_obrazku: t.Optional[t.Union[Path, str]] = None,
     ):
         super().__init__()
         self.velkost = velkost
+        self.image: pygame.Surface = pygame.Surface(velkost, pygame.SRCALPHA)
         if cesta_k_obrazku:
             self.image = self.nacitaj_obrazok(cesta_k_obrazku)
-        else:
-            self.image = pygame.Surface(velkost, pygame.SRCALPHA)
 
-        self.rect = self.image.get_rect()
+        self.rect: pygame.Rect = self.image.get_rect()
         self.rect.x = pozicia[0]
         self.rect.y = pozicia[1]
 
-    def nacitaj_obrazok(self, cesta_k_obrazku: Path | str) -> pygame.Surface:
+    def nacitaj_obrazok(self, cesta_k_obrazku: t.Union[Path, str]) -> pygame.Surface:
         """
         Nacitá obrazok z daného adresára (relatívneho ku `ASSETY_ROOT`) a nastaví ho na správnu velkosť.
         Vráti načítaný obrázok.

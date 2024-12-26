@@ -13,10 +13,10 @@ class Tlacidlo(Sprite):
 
     def __init__(
         self,
-        pozicia: tuple[int, int],
+        pozicia: t.Tuple[int, int],
         text: str,
-        po_kliknuti: t.Callable,
-        velkost: tuple[int, int] = (200, 100),
+        po_kliknuti: t.Callable[[], None],
+        velkost = (200, 100),
         velkost_textu: t.Optional[int] = None,
     ):
         super().__init__(pozicia, velkost, Path("ui") / "tlacidlo.png")

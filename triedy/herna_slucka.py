@@ -8,7 +8,8 @@ import pygame
 import pygame_widgets
 
 import nastavenia as n
-from triedy.scena import ManazerScen, HlavneMenu, Nastavenia, Level1
+from triedy.scena import ManazerScen, HlavneMenu, Nastavenia
+from triedy.scena.levely import Level1
 from triedy.sprite.sprite import Sprite
 
 

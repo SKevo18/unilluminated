@@ -1,3 +1,2 @@
-NAZOV_HRY = "test"
-VELKOST_BUNKY = (16, 16)
+NAZOV_HRY = "Unilluminated"
 VELKOST_OKNA = (800, 600)

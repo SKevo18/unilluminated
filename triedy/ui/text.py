@@ -12,7 +12,7 @@ class Text(Sprite):
 
     def __init__(
         self,
-        pozicia: tuple[int, int],
+        pozicia: t.Tuple[int, int],
         text: str,
         velkost_textu: int = 20,
         farba=(0, 0, 0),

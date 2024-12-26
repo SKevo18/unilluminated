@@ -1,3 +1,5 @@
+import typing as t
+
 import pygame
 
 from triedy.sprite.sprite import Sprite
@@ -9,7 +11,7 @@ class Scena(pygame.sprite.Group):
     Všeobecná trieda pre scénu.
     """
 
-    def __init__(self, *sprity: Sprite | pygame.sprite.Group):
+    def __init__(self, *sprity: t.Union[Sprite, pygame.sprite.Group]):
         super().__init__(*sprity)
 
     @classmethod

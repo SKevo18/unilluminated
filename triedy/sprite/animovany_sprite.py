@@ -16,16 +16,16 @@ class AnimovanySprite(OsvetlenySprite):
     def __init__(
         self,
         animacia_id: str,
-        pozicia: tuple[int, int],
-        velkost: tuple[int, int],
-        cesta_k_obrazkom: Path | str,
+        pozicia: t.Tuple[int, int],
+        velkost = (16, 16),
+        cesta_k_obrazkom: t.Optional[t.Union[Path, str]] = None,
     ):
         super().__init__(pozicia, velkost, cesta_k_obrazkom)
         self.animacia_id = animacia_id
         self.index = 0
 
     @classmethod
-    def nacitaj_animacie(cls, kluc: str, cesta_k_obrazkom: Path | str):
+    def nacitaj_animacie(cls, kluc: str, cesta_k_obrazkom: t.Union[Path, str]):
         """
         Načíta animácie z daného adresára pod určitým kľúčom. Ak už existujú animácie v cache, vráti ich.
 
