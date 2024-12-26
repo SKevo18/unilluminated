@@ -2,12 +2,14 @@
 Modul pre hernú slučku.
 """
 
+import typing as t
+
 import pygame
 import pygame_widgets
 
 import nastavenia as n
 from triedy.scena import ManazerScen, HlavneMenu, Level1
-from triedy.ui.tlacidlo import Tlacidlo
+from triedy.sprite.sprite import Sprite
 
 
 class HernaSlucka:
@@ -32,9 +34,10 @@ class HernaSlucka:
             HernaSlucka.OKNO.fill((0, 0, 0))
 
             eventy = pygame.event.get()
-            if not HernaSlucka._spracuj_eventy(eventy):
+            if not HernaSlucka.spracuj_eventy(eventy):
                 bezi = False
                 break
+
             HernaSlucka.update()
             HernaSlucka.draw(HernaSlucka.OKNO)
 
@@ -78,7 +81,7 @@ class HernaSlucka:
         ManazerScen.zmen_scenu(0)
 
     @staticmethod
-    def _spracuj_eventy(eventy: list[pygame.event.Event]) -> bool:
+    def spracuj_eventy(eventy: t.List[pygame.event.Event]) -> bool:
         """
         Pomocná funkcia pre spracovanie eventov. Ak vráti `False`, hlavná herná slučka sa zastaví (t. j. hru sme ukončili).
         """
@@ -87,11 +90,10 @@ class HernaSlucka:
             if event.type == pygame.QUIT or (
                 event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE
             ):
-                return False
-            elif event.type == pygame.MOUSEBUTTONDOWN:
-                for tlacidlo in ManazerScen.aktualna_scena().sprites():
-                    if isinstance(tlacidlo, Tlacidlo):
-                        if tlacidlo.rect.collidepoint(event.pos):
-                            tlacidlo.po_kliknuti()
-                            return True
+                return False  # ukončenie hry
+            else:
+                for sprite in ManazerScen.aktualna_scena().sprites():
+                    if isinstance(sprite, Sprite):
+                        sprite.spracuj_event(event)
+
         return True

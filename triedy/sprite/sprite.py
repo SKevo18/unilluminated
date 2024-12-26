@@ -1,13 +1,13 @@
 from pathlib import Path
 import pygame
 
-ASSETY_ROOT = Path(__file__).parent.parent.parent / "assety"
-
 
 class Sprite(pygame.sprite.Sprite):
     """
-    Predstavuje klasický obrázok, bez animácií.
+    Predstavuje všetky interaktívne objekty v hre.
     """
+
+    ASSETY_ROOT = Path(__file__).parent.parent.parent / "assety"
 
     def __init__(
         self,
@@ -16,16 +16,26 @@ class Sprite(pygame.sprite.Sprite):
         cesta_k_obrazku: Path | str,
     ):
         super().__init__()
-        self.image = pygame.image.load(ASSETY_ROOT / cesta_k_obrazku).convert_alpha()
-        self.image = pygame.transform.scale(self.image, velkost)
+        self.velkost = velkost
+        self.image = self.nacitaj_obrazok(cesta_k_obrazku)
 
         self.rect = self.image.get_rect()
         self.rect.x = pozicia[0]
         self.rect.y = pozicia[1]
 
-    def zmenit_obrazok(self, novy_obrazok: pygame.Surface):
+    def nacitaj_obrazok(self, cesta_k_obrazku: Path | str) -> pygame.Surface:
         """
-        Setter pre obrázok spritu.
+        Nacitá obrazok z daného adresára (relatívneho ku `ASSETY_ROOT`) a nastaví ho na správnu velkosť.
+        Vráti načítaný obrázok.
         """
 
-        self.image = novy_obrazok
+        obrazok = pygame.image.load(self.ASSETY_ROOT / cesta_k_obrazku).convert_alpha()
+        obrazok = pygame.transform.scale(obrazok, self.velkost)
+
+        return obrazok
+
+    def spracuj_event(self, event: pygame.event.Event):
+        """
+        Spracuje event z hlavnej hernej slučky.
+        """
+        pass

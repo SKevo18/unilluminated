@@ -1,7 +1,8 @@
+import typing as t
 from pathlib import Path
+
 import pygame
 
-from triedy.sprite.sprite import ASSETY_ROOT
 from triedy.sprite.osvetleny_sprite import OsvetlenySprite
 
 
@@ -10,7 +11,7 @@ class AnimovanySprite(OsvetlenySprite):
     Predstavuje animovaný sprite.
     """
 
-    CACHE_ANIMACII: "dict[str, list[pygame.Surface]]" = {}
+    CACHE_ANIMACII: t.Dict[str, t.List[pygame.Surface]] = {}
 
     def __init__(
         self,
@@ -26,16 +27,16 @@ class AnimovanySprite(OsvetlenySprite):
     @classmethod
     def nacitaj_animacie(cls, kluc: str, cesta_k_obrazkom: Path | str):
         """
-        Načíta animácie z daného adresára pod určitým kľúčom.
+        Načíta animácie z daného adresára pod určitým kľúčom. Ak už existujú animácie v cache, vráti ich.
 
-        Ak už existujú animácie v cache, vráti ich.
+        `@classmethod` preto, aby každý potomok mal svoj vlastný cache.
         """
 
         if kluc in cls.CACHE_ANIMACII:
             return cls.CACHE_ANIMACII[kluc]
 
         cls.CACHE_ANIMACII[kluc] = []
-        for obrazok in (ASSETY_ROOT / cesta_k_obrazkom).iterdir():
+        for obrazok in (cls.ASSETY_ROOT / cesta_k_obrazkom).iterdir():
             obrazok = pygame.image.load(obrazok).convert_alpha()
             cls.CACHE_ANIMACII[kluc].append(obrazok)
 
@@ -49,6 +50,5 @@ class AnimovanySprite(OsvetlenySprite):
         self.index += 1
         self.index %= len(self.CACHE_ANIMACII[self.animacia_id])
 
-        self.zmenit_obrazok(self.CACHE_ANIMACII[self.animacia_id][self.index])
-
+        self.image = self.CACHE_ANIMACII[self.animacia_id][self.index]
         super().update()

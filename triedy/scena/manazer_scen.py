@@ -12,7 +12,7 @@ class ManazerScen:
     Manažér scén. Používa sa staticky (nie je potrebné vytvárať viac ako jednu inštanciu).
     """
 
-    VSETKY_SCENY: list["Scena"] = []
+    VSETKY_SCENY: t.List["Scena"] = []
     """Všetky scény v hre."""
     index_aktualnej_sceny = 0
     """Index aktuálnej scény, ktorá sa vykresľuje v hernej slučke."""
