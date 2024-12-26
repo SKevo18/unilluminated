@@ -1,8 +1,12 @@
-from pathlib import Path
-
+import asyncio
 from triedy.herna_slucka import HernaSlucka
 
-KORENOVY_ADRESAR = Path(__file__).parent
+
+async def main():
+    await HernaSlucka.spusti()
+
 
 if __name__ == "__main__":
-    HernaSlucka().spusti()
+    asyncio.run(main())
+else:
+    asyncio.create_task(main())

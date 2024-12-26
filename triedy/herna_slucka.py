@@ -4,8 +4,8 @@ Modul pre hernú slučku.
 
 import typing as t
 
+import asyncio
 import pygame
-import pygame_widgets
 
 import nastavenia as n
 from triedy.scena import ManazerScen, HlavneMenu, Nastavenia
@@ -21,33 +21,31 @@ class HernaSlucka:
 
     OKNO = pygame.display.set_mode(n.VELKOST_OKNA)
     """Okno, v ktorom sa celá hra vykresľuje."""
-    CLOCK = pygame.time.Clock()
 
     @staticmethod
-    def spusti():
+    async def spusti():
         """
         Spustí hlavnú hernú slučku.
         """
-        HernaSlucka.initializuj()
 
-        bezi = True
-        while bezi:
+        HernaSlucka.initializuj()
+        clock = pygame.time.Clock()
+
+        while True:
             HernaSlucka.OKNO.fill((0, 0, 0))
 
             eventy = pygame.event.get()
             if not HernaSlucka.spracuj_eventy(eventy):
-                bezi = False
                 break
 
             HernaSlucka.update()
             HernaSlucka.draw(HernaSlucka.OKNO)
+            await asyncio.sleep(0)
 
-            pygame_widgets.update(eventy)
             pygame.display.flip()
-            HernaSlucka.CLOCK.tick(60)
+            clock.tick(60)
 
         pygame.quit()
-        exit()
 
     @staticmethod
     def initializuj():
@@ -55,6 +53,7 @@ class HernaSlucka:
         Inicializuje pyGame a načíta všetky scény.
         """
         pygame.init()
+        pygame.font.init()
         pygame.display.init()
         pygame.display.set_caption(n.NAZOV_HRY)
         HernaSlucka.nacitat_sceny()
@@ -71,6 +70,7 @@ class HernaSlucka:
         """
         Vykresľuje aktuálnu scénu do daného okna.
         """
+
         ManazerScen.aktualna_scena().draw(surface)
 
     @staticmethod
