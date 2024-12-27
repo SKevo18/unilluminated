@@ -2,11 +2,11 @@ import typing as t
 
 import pygame
 
-from triedy.sprite.entity.entita import Entita
+from triedy.sprite.entity.svetelna_entita import SvetelnaEntita
 from triedy.kamera import Kamera
 
 
-class Hrac(Entita):
+class Hrac(SvetelnaEntita):
     """
     Hlavná postava hry.
     """

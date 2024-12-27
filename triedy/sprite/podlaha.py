@@ -1,6 +1,6 @@
 import typing as t
 
-from triedy.sprite import Sprite
+from triedy.sprite.sprite import Sprite
 
 
 class Podlaha(Sprite):

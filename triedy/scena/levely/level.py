@@ -1,11 +1,13 @@
 import pygame
 import pytmx
 
+import nastavenia as n
 from triedy.scena import Scena
 from triedy.kamera import Kamera
 from triedy.sprite import Sprite, Podlaha, Stena
 from triedy.sprite.entity import Hrac
 from triedy.sprite.entity.entita import Entita
+from triedy.sprite.entity.svetelna_entita import SvetelnaEntita
 
 
 class Level(Scena):
@@ -22,6 +24,10 @@ class Level(Scena):
         self.mapa = None
         self.steny_maska = None
         self.entity = pygame.sprite.Group()
+
+        self.tmavy_povrch = None
+        """Tmavý overlay pre celý level."""
+        self.uroven_tmy = 0.95  # 95% tma
 
     def nacitat_level(self):
         self.mapa = pytmx.load_pygame(
@@ -65,6 +71,16 @@ class Level(Scena):
             self.entity.add(self.hrac)
             self.add(self.hrac)
 
+        # zakrytie celého levelu tmavým povrchom
+        self.tmavy_povrch = pygame.Surface(
+            (
+                n.VELKOST_OKNA[0],
+                n.VELKOST_OKNA[1],
+            ),
+            pygame.SRCALPHA,
+        )
+        self.tmavy_povrch.fill((0, 0, 0, int(255 * self.uroven_tmy)))
+
     def skontroluj_kolizie(self):
         if not self.steny_maska:
             return
@@ -107,5 +123,17 @@ class Level(Scena):
         self.skontroluj_kolizie()
 
     def draw(self, surface: pygame.Surface):
+        # vykreslenie všetkých spritov:
         for sprite in self.sprites():
             surface.blit(sprite.image, Kamera.aplikuj_na_sprite(sprite))
+
+        # ak je level tmavý, t. j. existuje tma
+        if self.uroven_tmy > 0 and self.tmavy_povrch:
+            tmavy_povrch = self.tmavy_povrch.copy()
+
+            # aplikovanie svetiel:
+            for sprite in self.sprites():
+                if isinstance(sprite, SvetelnaEntita):
+                    sprite.svetlo.aplikuj_na_tmu(tmavy_povrch)
+
+            surface.blit(tmavy_povrch, (0, 0), special_flags=pygame.BLEND_RGBA_MULT)

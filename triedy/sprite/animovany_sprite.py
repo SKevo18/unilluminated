@@ -3,10 +3,10 @@ from pathlib import Path
 
 import pygame
 
-from triedy.sprite.osvetleny_sprite import OsvetlenySprite
+from triedy.sprite.sprite import Sprite
 
 
-class AnimovanySprite(OsvetlenySprite):
+class AnimovanySprite(Sprite):
     """
     Predstavuje animovaný sprite.
     """
@@ -17,7 +17,7 @@ class AnimovanySprite(OsvetlenySprite):
         self,
         animacia_id: str,
         pozicia: t.Tuple[int, int],
-        velkost = (16, 16),
+        velkost=(16, 16),
         cesta_k_obrazkom: t.Optional[t.Union[Path, str]] = None,
     ):
         super().__init__(pozicia, velkost, cesta_k_obrazkom)
