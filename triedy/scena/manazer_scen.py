@@ -19,14 +19,24 @@ class ManazerScen:
 
     @staticmethod
     def zmen_scenu(index: int):
+        """
+        Zmení aktuálnu scénu na scénu s daným indexom.
+        """
+
+        ManazerScen.VSETKY_SCENY[
+            ManazerScen.index_aktualnej_sceny
+        ].pred_zmenou_na_dalsiu()
         ManazerScen.index_aktualnej_sceny = index
+        ManazerScen.VSETKY_SCENY[index].pred_zmenou()
 
     @staticmethod
     def aktualna_scena() -> "Scena":
         try:
             return ManazerScen.VSETKY_SCENY[ManazerScen.index_aktualnej_sceny]
         except IndexError:
-            raise ValueError(f"Index aktuálnej scény ({ManazerScen.index_aktualnej_sceny}) neexistuje!")
+            raise ValueError(
+                f"Index aktuálnej scény ({ManazerScen.index_aktualnej_sceny}) neexistuje!"
+            )
 
     @staticmethod
     def update():

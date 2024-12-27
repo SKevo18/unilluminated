@@ -9,7 +9,7 @@ class Sprite(pygame.sprite.Sprite):
     Predstavuje všetky interaktívne objekty v hre.
     """
 
-    ASSETY_ROOT = Path(__file__).parent.parent.parent / "assety"
+    ASSETY_ROOT = Path(__file__).parent.parent.parent / "assets"
 
     def __init__(
         self,

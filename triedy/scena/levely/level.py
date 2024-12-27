@@ -1,7 +1,8 @@
-from pathlib import Path
+import pygame
 import pytmx
 
 from triedy.scena import Scena
+from triedy.kamera import Kamera
 from triedy.sprite import Sprite
 from triedy.sprite.entity import Hrac
 
@@ -11,15 +12,17 @@ class Level(Scena):
     Základná trieda pre všetky levely.
     """
 
-    LEVELY_ROOT = Path(__file__).parent.parent.parent.parent / "assety" / "levely"
+    LEVELY_ROOT = Sprite.ASSETY_ROOT / "levely"
 
     def __init__(self, mapa_id: str):
         super().__init__()
-        self.nacitat_level(mapa_id)
+        self.mapa_id = mapa_id
+        self.hrac = None
+        self.mapa = None
 
-    def nacitat_level(self, mapa_id: str):
+    def nacitat_level(self):
         self.mapa = pytmx.load_pygame(
-            str(self.LEVELY_ROOT / f"{mapa_id}.tmx"), pixelalpha=True
+            str(self.LEVELY_ROOT / f"{self.mapa_id}.tmx"), pixelalpha=True
         )
 
         for layer in self.mapa.visible_layers:
@@ -35,5 +38,18 @@ class Level(Scena):
             elif isinstance(layer, pytmx.TiledObjectGroup):
                 for obj in layer:
                     if obj.name == "hrac":
-                        hrac = Hrac((obj.x, obj.y))
-                        self.add(hrac)
+                        self.hrac = Hrac((obj.x, obj.y))
+                        print(self.hrac)
+                        self.add(self.hrac)
+
+    def pred_zmenou(self):
+        self.nacitat_level()
+
+    def update(self):
+        super().update()
+        if self.hrac:
+            Kamera.sleduj_entitu(self.hrac)
+
+    def draw(self, surface: pygame.Surface):
+        for sprite in self.sprites():
+            surface.blit(sprite.image, Kamera.aplikuj_na_sprite(sprite))

@@ -17,3 +17,13 @@ class Scena(pygame.sprite.Group):
     @classmethod
     def zmen_scenu(cls, index: int):
         ManazerScen.zmen_scenu(index)
+
+    def pred_zmenou(self):
+        """
+        Funkcia, ktorá sa spustí pred zmenou scény.
+        """
+
+    def pred_zmenou_na_dalsiu(self):
+        """
+        Funkcia, ktorá sa spustí pred zmenou na inú scénu.
+        """

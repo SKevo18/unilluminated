@@ -2,10 +2,10 @@ import typing as t
 
 import pygame
 
-from triedy.sprite.sprite import Sprite
+from triedy.sprite.entity.entita import Entita
+from triedy.kamera import Kamera
 
-
-class Hrac(Sprite):
+class Hrac(Entita):
     """
     Hlavná postava hry.
     """
@@ -17,6 +17,7 @@ class Hrac(Sprite):
 
     def spracuj_event(self, event: pygame.event.Event):
         if event.type == pygame.KEYDOWN:
+            # pohyb
             if event.key == pygame.K_LEFT:
                 self.velocita.x = -1
             elif event.key == pygame.K_RIGHT:
@@ -25,7 +26,14 @@ class Hrac(Sprite):
                 self.velocita.y = -1
             elif event.key == pygame.K_DOWN:
                 self.velocita.y = 1
+
+            # približovanie kamery
+            elif event.key == pygame.K_p:
+                Kamera.zmen_priblizenie(0.5)
+            elif event.key == pygame.K_o:
+                Kamera.zmen_priblizenie(-0.5)
         elif event.type == pygame.KEYUP:
+            # pohyb
             if event.key == pygame.K_LEFT:
                 self.velocita.x = 0
             elif event.key == pygame.K_RIGHT:

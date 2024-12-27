@@ -40,10 +40,10 @@ class HernaSlucka:
 
             HernaSlucka.update()
             HernaSlucka.draw(HernaSlucka.OKNO)
-            await asyncio.sleep(0)
 
             pygame.display.flip()
             clock.tick(60)
+            await asyncio.sleep(0)
 
         pygame.quit()
 
