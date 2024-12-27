@@ -15,7 +15,9 @@ class Entita(Sprite):
         pozicia: t.Tuple[int, int],
         velkost: t.Tuple[int, int],
         obrazok: str,
-        rychlost=1,
+        # rýchlosť vyššia ako 1 spôsobí, že detekcia kolízií nebude fungovať
+        # (preskočia sa framy)
+        rychlost=0.2,
     ):
         super().__init__(pozicia, velkost, obrazok)
         maska_vyska = self.rect.height // 5

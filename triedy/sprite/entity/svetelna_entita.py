@@ -14,8 +14,8 @@ class SvetelnaEntita(Entita):
         pozicia: t.Tuple[int, int],
         velkost: t.Tuple[int, int],
         obrazok: str,
-        rychlost=1,
-        radius_svetla=150,
+        rychlost=1.0,
+        radius_svetla=80,
         intenzita_svetla=1.0,
         farba_svetla=(255, 255, 255),
     ):

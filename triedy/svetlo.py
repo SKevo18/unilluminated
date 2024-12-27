@@ -1,15 +1,18 @@
 import typing as t
-
 import pygame
 
 from triedy.kamera import Kamera
 
 
 class Svetlo:
+    """
+    Svetlo, ktoré osvetľuje okolie.
+    """
+
     def __init__(
         self,
         pozicia: t.Tuple[int, int],
-        radius=150,
+        radius=80,
         intenzita=1.0,
         farba=(255, 255, 255),
     ):
@@ -23,22 +26,21 @@ class Svetlo:
         """Farba svetla."""
 
         self._radius: float = self.originalny_radius
+        self.ide_spat = False
 
     def vytvor_povrch(self) -> pygame.Surface:
         """
         Vytvorí povrch pre svetlo (svetelný kruh).
         """
-        # Prispôsobenie rádiusu na základe zoomu
-        radius = self._radius * Kamera.PRIBLIZENIE
-        povrch = pygame.Surface((radius, radius), pygame.SRCALPHA)
+        # prispôsobiť radius zoomu
+        radius = round(self._radius * Kamera.PRIBLIZENIE)
+        povrch = pygame.Surface((radius * 2, radius * 2), pygame.SRCALPHA)
 
-        for r in range(round(radius), -1, -1):
+        for r in range(radius, -1, -1):
             # intenzita sa od vonka postupne znižuje
             alpha = int((1 - (r / radius)) * 255 * self.intenzita)
-            # kruh po kruhu, tvoria gradient
-            pygame.draw.circle(
-                povrch, (*self.farba, alpha), (radius / 2, radius / 2), r
-            )
+            # kruh na kruhu, tvoria gradient
+            pygame.draw.circle(povrch, (*self.farba, alpha), (radius, radius), r)
 
         return povrch
 
@@ -48,19 +50,17 @@ class Svetlo:
         pričom zohľadní zoom a offset kamery pri kreslení.
         """
         # pulzovanie svetla
-        self._radius -= 0.1
-        if self._radius < self.originalny_radius - 10:
-            self._radius = self.originalny_radius + 10
-
-        radius = self._radius * Kamera.PRIBLIZENIE
-
-        # world-space -> screen-space
-        x_na_obrazovke = (
-            self.pozicia[0] - Kamera.OFFSET.x
-        ) * Kamera.PRIBLIZENIE - radius / 2
-        y_na_obrazovke = (
-            self.pozicia[1] - Kamera.OFFSET.y
-        ) * Kamera.PRIBLIZENIE - radius / 2
+        self._radius += -0.1 if self.ide_spat else 0.1
+        if (
+            self._radius < self.originalny_radius - 3
+            or self._radius > self.originalny_radius + 3
+        ):
+            self.ide_spat = not self.ide_spat
 
         # aplikácia svetla na tmavý povrch
-        tmavy_povrch.blit(self.vytvor_povrch(), (x_na_obrazovke, y_na_obrazovke))
+        radius = round(self._radius * Kamera.PRIBLIZENIE)
+        tmavy_povrch.blit(
+            self.vytvor_povrch(),
+            # (self.pozicia[0] - radius, self.pozicia[1] - radius),
+            self.pozicia,
+        )

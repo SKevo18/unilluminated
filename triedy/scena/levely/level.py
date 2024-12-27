@@ -86,7 +86,6 @@ class Level(Scena):
         if not self.steny_maska:
             return
 
-        # FIXME: mieša sa Hrac.update a skontroluj_kolizie
         for entita in self.entity:
             if not isinstance(entita, Entita) or not entita.velocita.length():
                 continue
@@ -100,6 +99,8 @@ class Level(Scena):
             if self.steny_maska.overlap(entita.maska, maska_pozicia):
                 entita.rect.x = entita.posledna_pozicia[0]
                 entita.rychlost = 0
+            else:
+                entita.rychlost = povodna_rychlost
 
             # pohyb po Y osi
             entita.rect.y = entita.posledna_pozicia[1] + entita.velocita.y
@@ -107,9 +108,7 @@ class Level(Scena):
             if self.steny_maska.overlap(entita.maska, maska_pozicia):
                 entita.rect.y = entita.posledna_pozicia[1]
                 entita.rychlost = 0
-
-            # ak sme narazili do steny, obnovíme velocitu pre ďalší frame
-            if entita.rychlost <= 0:
+            else:
                 entita.rychlost = povodna_rychlost
 
     def pred_zmenou(self):

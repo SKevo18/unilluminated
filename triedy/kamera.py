@@ -37,7 +37,7 @@ class Kamera:
         Priblíži alebo oddiali kameru.
         """
         Kamera.PRIBLIZENIE = min(
-            5, max(1, Kamera.PRIBLIZENIE + relativna_hodnota_priblizenia)
+            3, max(1, Kamera.PRIBLIZENIE + relativna_hodnota_priblizenia)
         )
 
     @staticmethod
