@@ -50,10 +50,10 @@ class Svetlo:
         pričom zohľadní zoom a offset kamery pri kreslení.
         """
         # pulzovanie svetla
-        self._radius += -0.1 if self.ide_spat else 0.1
+        self._radius += -0.05 if self.ide_spat else 0.05
         if (
-            self._radius < self.originalny_radius - 3
-            or self._radius > self.originalny_radius + 3
+            self._radius < self.originalny_radius - 1
+            or self._radius > self.originalny_radius + 1
         ):
             self.ide_spat = not self.ide_spat
 
@@ -61,6 +61,8 @@ class Svetlo:
         radius = round(self._radius * Kamera.PRIBLIZENIE)
         tmavy_povrch.blit(
             self.vytvor_povrch(),
-            # (self.pozicia[0] - radius, self.pozicia[1] - radius),
-            self.pozicia,
+            (
+                self.pozicia[0] - self.originalny_radius,
+                self.pozicia[1] - radius,
+            ),
         )

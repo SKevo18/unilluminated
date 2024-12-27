@@ -25,9 +25,8 @@ class Level(Scena):
         self.steny_maska = None
         self.entity = pygame.sprite.Group()
 
-        self.tmavy_povrch = None
+        self.tmavy_povrch: pygame.Surface
         """Tmavý overlay pre celý level."""
-        self.uroven_tmy = 0.95  # 95% tma
 
     def nacitat_level(self):
         self.mapa = pytmx.load_pygame(
@@ -72,15 +71,14 @@ class Level(Scena):
             self.add(self.hrac)
 
         # zakrytie celého levelu tmavým povrchom
-        if self.uroven_tmy > 0:
-            self.tmavy_povrch = pygame.Surface(
-                (
-                    n.VELKOST_OKNA[0],
-                    n.VELKOST_OKNA[1],
-                ),
-                pygame.SRCALPHA,
-            )
-            self.tmavy_povrch.fill((0, 0, 0, int(255 * self.uroven_tmy)))
+        self.tmavy_povrch = pygame.Surface(
+            (
+                n.VELKOST_OKNA[0],
+                n.VELKOST_OKNA[1],
+            ),
+            pygame.SRCALPHA,
+        )
+        self.tmavy_povrch.fill((0, 0, 0))
 
     def skontroluj_kolizie(self):
         if not self.steny_maska:
@@ -123,17 +121,11 @@ class Level(Scena):
         self.skontroluj_kolizie()
 
     def draw(self, surface: pygame.Surface):
-        # vykreslenie všetkých spritov:
+        tmavy_povrch = self.tmavy_povrch.copy()
         for sprite in self.sprites():
             surface.blit(sprite.image, Kamera.aplikuj_na_sprite(sprite))
 
-        # ak je level tmavý, t. j. existuje tma
-        if self.uroven_tmy > 0 and self.tmavy_povrch:
-            tmavy_povrch = self.tmavy_povrch.copy()
+            if isinstance(sprite, SvetelnaEntita):
+                sprite.svetlo.aplikuj_na_tmu(tmavy_povrch)
 
-            # aplikovanie svetiel:
-            for sprite in self.sprites():
-                if isinstance(sprite, SvetelnaEntita):
-                    sprite.svetlo.aplikuj_na_tmu(tmavy_povrch)
-
-            surface.blit(tmavy_povrch, (0, 0), special_flags=pygame.BLEND_RGBA_MULT)
+        surface.blit(tmavy_povrch, (0, 0), special_flags=pygame.BLEND_RGBA_MIN)
