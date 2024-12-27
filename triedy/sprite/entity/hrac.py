@@ -12,9 +12,7 @@ class Hrac(Entita):
     """
 
     def __init__(self, pozicia: t.Tuple[int, int]):
-        super().__init__(pozicia, (16, 16), "hrac.png")
-        self.velocita = pygame.Vector2(0, 0)
-        self.rychlost = 2
+        super().__init__(pozicia, (16, 16), "hrac.png", rychlost=2)
 
     def spracuj_event(self, event: pygame.event.Event):
         if event.type == pygame.KEYDOWN:
@@ -45,6 +43,5 @@ class Hrac(Entita):
                 self.velocita.y = 0
 
     def update(self):
-        if self.velocita.length() > 0:
-            self.posledna_pozicia = self.rect.x, self.rect.y
+        if self.rychlost > 0 and self.velocita.length() > 0:
             self.rect = self.rect.move(self.velocita.normalize() * self.rychlost)
