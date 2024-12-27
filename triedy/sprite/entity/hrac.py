@@ -5,6 +5,7 @@ import pygame
 from triedy.sprite.entity.entita import Entita
 from triedy.kamera import Kamera
 
+
 class Hrac(Entita):
     """
     Hlavná postava hry.
@@ -45,4 +46,5 @@ class Hrac(Entita):
 
     def update(self):
         if self.velocita.length() > 0:
+            self.posledna_pozicia = self.rect.x, self.rect.y
             self.rect = self.rect.move(self.velocita.normalize() * self.rychlost)

@@ -73,6 +73,7 @@ class Kamera:
                 ),
             )
 
+        # vráti nový rect s priblíženým obrázkom
         return pygame.Rect(
             pozicia_po_zoome.x,
             pozicia_po_zoome.y,
