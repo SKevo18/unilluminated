@@ -72,14 +72,15 @@ class Level(Scena):
             self.add(self.hrac)
 
         # zakrytie celého levelu tmavým povrchom
-        self.tmavy_povrch = pygame.Surface(
-            (
-                n.VELKOST_OKNA[0],
-                n.VELKOST_OKNA[1],
-            ),
-            pygame.SRCALPHA,
-        )
-        self.tmavy_povrch.fill((0, 0, 0, int(255 * self.uroven_tmy)))
+        if self.uroven_tmy > 0:
+            self.tmavy_povrch = pygame.Surface(
+                (
+                    n.VELKOST_OKNA[0],
+                    n.VELKOST_OKNA[1],
+                ),
+                pygame.SRCALPHA,
+            )
+            self.tmavy_povrch.fill((0, 0, 0, int(255 * self.uroven_tmy)))
 
     def skontroluj_kolizie(self):
         if not self.steny_maska:

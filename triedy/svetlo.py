@@ -9,42 +9,58 @@ class Svetlo:
     def __init__(
         self,
         pozicia: t.Tuple[int, int],
-        radius=80,
+        radius=150,
         intenzita=1.0,
         farba=(255, 255, 255),
     ):
         self.pozicia = pozicia
-        self.radius = radius
-        """Rádius svetla v pixeloch."""
+        """Pozícia svetla vo "world space"."""
+        self.originalny_radius = radius
+        """Pôvodný rádius svetla v pixeloch."""
         self.intenzita = intenzita
         """Intenzita svetla."""
         self.farba = farba
         """Farba svetla."""
 
-        self.povrch = self.vytvor_povrch()
+        self._radius: float = self.originalny_radius
 
     def vytvor_povrch(self) -> pygame.Surface:
         """
         Vytvorí povrch pre svetlo (svetelný kruh).
         """
-        povrch = pygame.Surface((self.radius * 2, self.radius * 2), pygame.SRCALPHA)
-        stred = (self.radius, self.radius)
+        # Prispôsobenie rádiusu na základe zoomu
+        radius = self._radius * Kamera.PRIBLIZENIE
+        povrch = pygame.Surface((radius, radius), pygame.SRCALPHA)
 
-        for r in range(self.radius, -1, -1):
-            alpha = int((1 - (r / self.radius)) * 255 * self.intenzita)
-            pygame.draw.circle(povrch, (*self.farba, alpha), stred, r)
+        for r in range(round(radius), -1, -1):
+            # intenzita sa od vonka postupne znižuje
+            alpha = int((1 - (r / radius)) * 255 * self.intenzita)
+            # kruh po kruhu, tvoria gradient
+            pygame.draw.circle(
+                povrch, (*self.farba, alpha), (radius / 2, radius / 2), r
+            )
 
         return povrch
 
     def aplikuj_na_tmu(self, tmavy_povrch: pygame.Surface):
         """
-        Aplikuje svetlo na tmavý povrch ("vyreže tmu").
+        Aplikuje svetlo na tmavý povrch ("vyreže tmu"),
+        pričom zohľadní zoom a offset kamery pri kreslení.
         """
-        pozicia_pred_zoomom = pygame.Vector2(self.pozicia) - Kamera.OFFSET
-        stred_obrazovky = pygame.Vector2(tmavy_povrch.get_size()) / 2
-        pozicia_po_zoome = (
-            pozicia_pred_zoomom - stred_obrazovky
-        ) * Kamera.PRIBLIZENIE + stred_obrazovky
+        # pulzovanie svetla
+        self._radius -= 0.1
+        if self._radius < self.originalny_radius - 10:
+            self._radius = self.originalny_radius + 10
 
-        pozicia = (pozicia_po_zoome.x - self.radius, pozicia_po_zoome.y - self.radius)
-        tmavy_povrch.blit(self.povrch, pozicia)
+        radius = self._radius * Kamera.PRIBLIZENIE
+
+        # world-space -> screen-space
+        x_na_obrazovke = (
+            self.pozicia[0] - Kamera.OFFSET.x
+        ) * Kamera.PRIBLIZENIE - radius / 2
+        y_na_obrazovke = (
+            self.pozicia[1] - Kamera.OFFSET.y
+        ) * Kamera.PRIBLIZENIE - radius / 2
+
+        # aplikácia svetla na tmavý povrch
+        tmavy_povrch.blit(self.vytvor_povrch(), (x_na_obrazovke, y_na_obrazovke))

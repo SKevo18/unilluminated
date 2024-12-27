@@ -15,11 +15,18 @@ class SvetelnaEntita(Entita):
         velkost: t.Tuple[int, int],
         obrazok: str,
         rychlost=1,
-        radius_svetla=80,
-        intenzita_svetla=1,
+        radius_svetla=150,
+        intenzita_svetla=1.0,
+        farba_svetla=(255, 255, 255),
     ):
         super().__init__(pozicia, velkost, obrazok, rychlost)
-        self.svetlo = Svetlo(self.rect.center, radius_svetla, intenzita_svetla)
+        self.svetlo = Svetlo(
+            self.rect.center,
+            radius_svetla,
+            intenzita_svetla,
+            farba_svetla,
+        )
 
     def update(self):
+        super().update()
         self.svetlo.pozicia = self.rect.center
