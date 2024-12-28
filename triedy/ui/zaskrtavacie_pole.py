@@ -66,7 +66,7 @@ class ZaskrtavaciePoleBox(Sprite):
         self.je_zaskrtnute = not self.je_zaskrtnute
         self.po_kliknuti(self.je_zaskrtnute)
 
-    def spracuj_event(self, event: Event):
+    def spracuj_event(self, event: Event, _):
         if event.type == pygame.MOUSEBUTTONDOWN:
             if self.rect.collidepoint(event.pos):
                 self.prepni()

@@ -3,6 +3,7 @@ from pathlib import Path
 
 import pygame
 
+from triedy.kamera import Kamera
 from triedy.sprite.sprite import Sprite
 
 
@@ -15,40 +16,63 @@ class AnimovanySprite(Sprite):
 
     def __init__(
         self,
-        animacia_id: str,
         pozicia: t.Tuple[int, int],
         velkost=(16, 16),
+        animacia_id: t.Optional[str] = None,
         cesta_k_obrazkom: t.Optional[t.Union[Path, str]] = None,
     ):
-        super().__init__(pozicia, velkost, cesta_k_obrazkom)
+        super().__init__(pozicia, velkost, None)
         self.animacia_id = animacia_id
-        self.index = 0
+        """ID animácií. Ak je `None`, tak sa neanimuje."""
+        self.cas_animacie = 0
+        """Čas animácie v milisekundách."""
 
-    @classmethod
-    def nacitaj_animacie(cls, kluc: str, cesta_k_obrazkom: t.Union[Path, str]):
+        self.animuj = True
+        """Ak je `True`, obrázky sa menia v metóde `update()`."""
+
+        # ak neexistujú obrázky, nevykreslí sa nič:
+        if self.animacia_id is not None and cesta_k_obrazkom is not None:
+            self.nacitaj_animacie(self.animacia_id, cesta_k_obrazkom)
+
+    def nacitaj_animacie(
+        self,
+        kluc: str,
+        cesta_k_obrazkom: t.Optional[t.Union[Path, str]] = None,
+    ):
         """
-        Načíta animácie z daného adresára pod určitým kľúčom. Ak už existujú animácie v cache, vráti ich.
+        Načíta animácie z daného adresára pod určitým kľúčom.
+        Ak už existujú animácie v cache (alebo `cesta_k_obrazkom` je `None`), vráti ich.
 
         `@classmethod` preto, aby každý potomok mal svoj vlastný cache.
         """
 
-        if kluc in cls.CACHE_ANIMACII:
-            return cls.CACHE_ANIMACII[kluc]
+        if cesta_k_obrazkom is None or kluc in self.CACHE_ANIMACII:
+            return self.CACHE_ANIMACII[kluc]
 
-        cls.CACHE_ANIMACII[kluc] = []
-        for obrazok in (cls.ASSETY_ROOT / cesta_k_obrazkom).iterdir():
+        self.CACHE_ANIMACII[kluc] = []
+        for obrazok in (self.ASSETY_ROOT / cesta_k_obrazkom).iterdir():
             obrazok = pygame.image.load(obrazok).convert_alpha()
-            cls.CACHE_ANIMACII[kluc].append(obrazok)
+            self.CACHE_ANIMACII[kluc].append(obrazok)
 
-        return cls.CACHE_ANIMACII[kluc]
+        return self.CACHE_ANIMACII[kluc]
+
+    @property
+    def animacie(self):
+        if self.animacia_id is None:
+            return []
+
+        return self.nacitaj_animacie(self.animacia_id)
 
     def update(self):
-        """
-        Aktualizuje a vykreslí animáciu.
-        """
+        if self.animacia_id is None:
+            return super().update()
 
-        self.index += 1
-        self.index %= len(self.CACHE_ANIMACII[self.animacia_id])
+        if self.animuj:
+            self.cas_animacie += 1
 
-        self.image = self.CACHE_ANIMACII[self.animacia_id][self.index]
-        super().update()
+        obrazok = self.animacie[self.cas_animacie // 10 % len(self.animacie)]
+        if self.je_otoceny:
+            obrazok = pygame.transform.flip(obrazok, True, False)
+
+        self.image = obrazok
+        return super().update()

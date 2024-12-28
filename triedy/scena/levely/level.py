@@ -32,6 +32,7 @@ class Level(Scena):
         self.mapa = pytmx.load_pygame(
             str(self.LEVELY_ROOT / f"{self.mapa_id}.tmx"), pixelalpha=True
         )
+        self.velkost_spritu = self.mapa.tilewidth
 
         podlaha: pytmx.TiledTileLayer = self.mapa.get_layer_by_name("podlaha")  # type: ignore
         steny: pytmx.TiledTileLayer = self.mapa.get_layer_by_name("steny")  # type: ignore
@@ -68,7 +69,7 @@ class Level(Scena):
         for obj in entity:
             self.hrac = Hrac((obj.x, obj.y))
             self.entity.add(self.hrac)
-            self.add(self.hrac)
+        self.add(self.entity)
 
         # zakrytie celého levelu tmavým povrchom
         self.tmavy_povrch = pygame.Surface(
@@ -88,26 +89,17 @@ class Level(Scena):
             if not isinstance(entita, Entita) or not entita.velocita.length():
                 continue
 
-            entita.posledna_pozicia = entita.rect.x, entita.rect.y
-            povodna_rychlost = entita.rychlost
-
             # pohyb po X osi
-            entita.rect.x = entita.posledna_pozicia[0] + entita.velocita.x
-            maska_pozicia = (entita.rect.x, entita.rect.y + entita.maska_offset[1])
-            if self.steny_maska.overlap(entita.maska, maska_pozicia):
-                entita.rect.x = entita.posledna_pozicia[0]
-                entita.rychlost = 0
-            else:
-                entita.rychlost = povodna_rychlost
+            nove_x = entita.rect.x + entita.velocita.x
+            maska_pozicia = (nove_x, entita.rect.y + entita.maska_offset[1])
+            if not self.steny_maska.overlap(entita.maska, maska_pozicia):
+                entita.rect.x = nove_x
 
             # pohyb po Y osi
-            entita.rect.y = entita.posledna_pozicia[1] + entita.velocita.y
-            maska_pozicia = (entita.rect.x, entita.rect.y + entita.maska_offset[1])
-            if self.steny_maska.overlap(entita.maska, maska_pozicia):
-                entita.rect.y = entita.posledna_pozicia[1]
-                entita.rychlost = 0
-            else:
-                entita.rychlost = povodna_rychlost
+            nove_y = entita.rect.y + entita.velocita.y
+            maska_pozicia = (entita.rect.x, nove_y + entita.maska_offset[1])
+            if not self.steny_maska.overlap(entita.maska, maska_pozicia):
+                entita.rect.y = nove_y
 
     def pred_zmenou(self):
         self.nacitat_level()
@@ -122,10 +114,30 @@ class Level(Scena):
 
     def draw(self, surface: pygame.Surface):
         tmavy_povrch = self.tmavy_povrch.copy()
-        for sprite in self.sprites():
-            surface.blit(sprite.image, Kamera.aplikuj_na_sprite(sprite))
 
+        # zoradenie spritov podľa Y pozície (hĺbky)
+        for sprite in sorted(
+            self.sprites(),
+            key=lambda sprite: [
+                not isinstance(
+                    sprite,
+                    Podlaha,  # podlaha sa vykresľuje prvá
+                ),
+                sprite.rect.y,  # ...inak sa kreslí podľa Y
+            ],
+        ):
+            # vykreslenie svetla
             if isinstance(sprite, SvetelnaEntita):
                 sprite.svetlo.aplikuj_na_tmu(tmavy_povrch)
 
-        surface.blit(tmavy_povrch, (0, 0), special_flags=pygame.BLEND_RGBA_MIN)
+            # vykreslenie sprite, s ohľadom na zoom a pozíciu kamery
+            surface.blit(sprite.image, Kamera.aplikuj_na_sprite(sprite))
+
+        surface.blit(
+            tmavy_povrch,
+            (0, 0),
+            # ak miešame pixel, preferujeme ten s menšou transparentnosťou
+            # vďaka tomu sa "vyreže" svetlo do tmy
+            # (pretože svetlo má menšiu transparentnosť ako tma, bude pri vykresľovaní preferované)
+            special_flags=pygame.BLEND_RGBA_MIN,
+        )

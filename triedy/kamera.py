@@ -18,7 +18,7 @@ class Kamera:
     Používa sa staticky (nie je potrebné vytvárať viac ako jednu inštanciu).
     """
 
-    PRIBLIZENIE = 2
+    PRIBLIZENIE = 1.0
     """Zoom kamery."""
     OFFSET = pygame.Vector2(0, 0)
     """Aktuálny posun kamery."""
@@ -63,7 +63,7 @@ class Kamera:
             # (bude sa pixelizovať, pretože budeme exponenciálne meniť jeho veľkosť,
             # t. j. budeme približovať priblížený obrázok)
             if not hasattr(sprite, "originalny_obrazok"):
-                setattr(sprite, "originalny_obrazok", sprite.image)
+                setattr(sprite, "originalny_obrazok", sprite.image.copy())
 
             sprite.image = pygame.transform.scale(
                 getattr(sprite, "originalny_obrazok"),

@@ -42,7 +42,7 @@ class Tlacidlo(Sprite):
             ),
         )
 
-    def spracuj_event(self, event: pygame.event.Event):
+    def spracuj_event(self, event: pygame.event.Event, _):
         if event.type == pygame.MOUSEBUTTONDOWN:  # začneme klikať a držíme myš
             if self.rect.collidepoint(event.pos):
                 self.kliknute = True
