@@ -15,7 +15,7 @@ class Text(Sprite):
         pozicia: t.Tuple[int, int],
         text: str,
         velkost_textu: int = 20,
-        farba=(0, 0, 0),
+        farba=(255, 255, 255),
         pozadie=(0, 0, 0, 0),
     ):
         self.pozadie = pozadie

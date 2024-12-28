@@ -16,6 +16,9 @@ class Scena(pygame.sprite.Group):
         self.velkost_spritu = 16
         """Veľkosť jedného sprite v pixeloch, predvolene 16."""
 
+        self.ui_elementy = pygame.sprite.Group()
+        """Skupina UI elementov."""
+
     @classmethod
     def zmen_scenu(cls, index: int):
         ManazerScen.zmen_scenu(index)
@@ -39,6 +42,7 @@ class Scena(pygame.sprite.Group):
         """
         Pomocná funkcia pre rekurzívne aktualizovanie spritov v skupine.
         """
+
         for sprite in skupina.sprites():
             sprite.update()
             if isinstance(sprite, pygame.sprite.Group):

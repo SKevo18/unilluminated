@@ -4,7 +4,10 @@ import pytmx
 import nastavenia as n
 from triedy.scena import Scena
 from triedy.kamera import Kamera
-from triedy.sprite import Sprite, Podlaha, Stena
+from triedy.ui.text import Text
+from triedy.sprite.sprite import Sprite
+from triedy.sprite.podlaha import Podlaha
+from triedy.sprite.stena import Stena
 from triedy.sprite.entity.hrac import Hrac
 from triedy.sprite.entity.entita import Entita
 from triedy.sprite.entity.odrazajuca_prisera import OdrazajucaPrisera
@@ -35,6 +38,10 @@ class Level(Scena):
         """Zoznam všetkých entít v leveli."""
         self.tmavy_povrch: pygame.Surface
         """Tmavý overlay pre celý level, na ktorý sa vykreslí svetlo."""
+
+        self.text_hp = Text((100, 100), "HP: 100")
+        """Textový objekt pre zobrazenie HP."""
+        self.ui_elementy.add(self.text_hp)
 
     def nacitat_level(self):
         self.mapa = pytmx.load_pygame(
@@ -123,6 +130,8 @@ class Level(Scena):
         self.kontroluj_pohyb()
 
     def draw(self, surface: pygame.Surface):
+        # kópia z originálu, ktorú môžme upraviť
+        # inak by tam bol after-image efekt
         tmavy_povrch = self.tmavy_povrch.copy()
 
         # zoradenie spritov podľa Y pozície (hĺbky)
@@ -151,3 +160,7 @@ class Level(Scena):
             # (pretože svetlo má menšiu transparentnosť ako tma, bude pri vykresľovan�� preferované)
             special_flags=pygame.BLEND_RGBA_MIN,
         )
+
+        # vykreslenie UI elementov na konci (v screen-space)
+        for ui_element in self.ui_elementy:
+            surface.blit(ui_element.image, ui_element.rect)
