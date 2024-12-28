@@ -60,7 +60,7 @@ class Svetlo:
             return
 
         # pulzovanie svetla = zmena radiusu +- 1
-        self._radius += -0.05 if self._pulzuje_naspat else 0.05
+        self._radius += -0.1 if self._pulzuje_naspat else 0.1
         if (
             self._radius < self.originalny_radius - 5
             or self._radius > self.originalny_radius + 5

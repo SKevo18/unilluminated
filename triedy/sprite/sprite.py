@@ -23,7 +23,7 @@ class Sprite(pygame.sprite.Sprite):
     ):
         super().__init__()
         self.velkost = velkost
-        self._je_otoceny = je_otoceny
+        self.je_otoceny = je_otoceny
 
         # self.image je v mojom prípade vždy pygame.Surface,
         # nikdy nie `None` ako to hovoria typy v pygame-ce
@@ -51,19 +51,6 @@ class Sprite(pygame.sprite.Sprite):
             obrazok = pygame.transform.flip(obrazok, True, False)
 
         return obrazok
-
-    @property
-    def je_otoceny(self) -> bool:
-        return self._je_otoceny
-
-    @je_otoceny.setter
-    def je_otoceny(self, hodnota: bool):
-        self._je_otoceny = hodnota
-
-        # ak sa hodnota zmení, aktualizujeme aj obrázok
-        # (dôvod, prečo som to spravil cez `@property` - je to akoby "hook"):
-        if self.image is not None:
-            self.image = pygame.transform.flip(self.image, True, False)
 
     def spracuj_event(self, event: pygame.event.Event, aktualna_scena: "Scena"):
         """

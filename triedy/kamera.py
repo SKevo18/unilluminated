@@ -18,7 +18,7 @@ class Kamera:
     Používa sa staticky (nie je potrebné vytvárať viac ako jednu inštanciu).
     """
 
-    PRIBLIZENIE = 1.0
+    PRIBLIZENIE = 2.0
     """Zoom kamery."""
     OFFSET = pygame.Vector2(0, 0)
     """Aktuálny posun kamery."""

@@ -63,7 +63,8 @@ class Hrac(SvetelnaEntita):
                     aktualna_scena.add(Fakla(podla_mriezky))
 
         elif event.type == pygame.KEYUP:
-            # pohyb
+            # pohyb - zastavíme, iba ak sme sa pohybovali tým smerom
+            # (aby sa hráč nezastavil ak zmení smer na opačný)
             if event.key == pygame.K_LEFT and self.velocita.x < 0:
                 self.velocita.x = 0
             elif event.key == pygame.K_RIGHT and self.velocita.x > 0:

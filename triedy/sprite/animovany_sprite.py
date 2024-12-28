@@ -33,6 +33,8 @@ class AnimovanySprite(Sprite):
         # ak neexistujú obrázky, nevykreslí sa nič:
         if self.animacia_id is not None and cesta_k_obrazkom is not None:
             self.nacitaj_animacie(self.animacia_id, cesta_k_obrazkom)
+            # prvý frame je originálny obrázok
+            self.originalny_obrazok = self.animacie[0].copy()
 
     def nacitaj_animacie(
         self,
@@ -66,13 +68,19 @@ class AnimovanySprite(Sprite):
     def update(self):
         if self.animacia_id is None:
             return super().update()
-
         if self.animuj:
             self.cas_animacie += 1
 
-        obrazok = self.animacie[self.cas_animacie // 10 % len(self.animacie)]
-        if self.je_otoceny:
-            obrazok = pygame.transform.flip(obrazok, True, False)
+        # aktualizujeme originálny obrázok
+        self.originalny_obrazok = self.animacie[
+            self.cas_animacie // 10 % len(self.animacie)
+        ].copy()
 
-        self.image = obrazok
+        # otočenie
+        if self.je_otoceny:
+            self.originalny_obrazok = pygame.transform.flip(
+                self.originalny_obrazok, True, False
+            )
+
+        # kamera nastaví self.image z self.originalny_obrazok
         return super().update()
