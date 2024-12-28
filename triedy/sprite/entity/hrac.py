@@ -19,8 +19,9 @@ class Hrac(SvetelnaEntita):
         super().__init__(
             pozicia,
             (16, 16),
-            "hrac",
             self.ASSETY_ROOT / "sprite" / "hrac",
+            # prevolene je animácia behu, ktorá sa iba pozastaví ak sa hráč nepohybuje:
+            animacia_id="bez",
             rychlost=0.5,
         )
 
@@ -46,6 +47,9 @@ class Hrac(SvetelnaEntita):
 
             # položenie fakle
             elif event.key == pygame.K_SPACE:
+                # animácia
+                self.prehrat_animaciu("poloz")
+
                 # ak je neďaleko fakle, odobereme ju
                 for fakla in aktualna_scena.sprites():
                     if isinstance(fakla, Fakla):
@@ -75,10 +79,13 @@ class Hrac(SvetelnaEntita):
                 self.velocita.y = 0
 
     def update(self):
-        if self.velocita.length() > 0:
-            self.rect = self.rect.move(self.velocita.normalize() * self.rychlost)
-            self.animuj = True
-        else:
-            self.animuj = False
+        pohybuje_sa = self.velocita.length() > 0
 
+        # hráčovi povolíme pohyb iba ak máme animáciu behu a nestojíme
+        # napr. ak máme animáciu "poloz", tak sa hráč nemôže hýbať
+        self.moze_ist = self.id_aktualnej_animacie == "bez" and pohybuje_sa
+
+        # ak sa pohybujeme, animujeme pohyb
+        # ak je animácia iná ako beh, prioritne prehrávame tú (napr. niečo položíme alebo útok a podobne)
+        self.animuj = pohybuje_sa or self.id_aktualnej_animacie != "bez"
         return super().update()

@@ -8,7 +8,6 @@ class Fakla(SvetelnaEntita):
         super().__init__(
             pozicia,
             (16, 16),
-            "fakla",
             self.ASSETY_ROOT / "sprite" / "fakla",
             radius_svetla=80,
             intenzita_svetla=0.75,

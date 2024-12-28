@@ -3,7 +3,6 @@ from pathlib import Path
 
 import pygame
 
-from triedy.kamera import Kamera
 from triedy.sprite.sprite import Sprite
 
 
@@ -17,64 +16,104 @@ class AnimovanySprite(Sprite):
     def __init__(
         self,
         pozicia: t.Tuple[int, int],
+        root_priecinok_animacii: t.Union[Path, str],
         velkost=(16, 16),
-        animacia_id: t.Optional[str] = None,
-        cesta_k_obrazkom: t.Optional[t.Union[Path, str]] = None,
+        animacia_id="chill",
     ):
         super().__init__(pozicia, velkost, None)
-        self.animacia_id = animacia_id
-        """ID animácií. Ak je `None`, tak sa neanimuje."""
-        self.cas_animacie = 0
-        """Čas animácie v milisekundách."""
-
+        self.id_aktualnej_animacie = animacia_id
+        """ID aktuálnej animácie ktorá sa prehráva."""
         self.animuj = True
         """Ak je `True`, obrázky sa menia v metóde `update()`."""
 
-        # ak neexistujú obrázky, nevykreslí sa nič:
-        if self.animacia_id is not None and cesta_k_obrazkom is not None:
-            self.nacitaj_animacie(self.animacia_id, cesta_k_obrazkom)
-            # prvý frame je originálny obrázok
-            self.originalny_obrazok = self.animacie[0].copy()
+        self._aktualna_je_jednorazova = False
+        """Ak je `True`, aktuálna animácia sa prehrá len jedenkrát."""
+        self._predchadzajuca_animacia = animacia_id
+        """Pomocná premenná na ukladanie predchádzajúcej animácie."""
+        self._cas_animacie = 0
+        """Čas animácie v milisekundách (pre výpočet indexu)."""
+
+        self.nacitaj_animacie(root_priecinok_animacii)
+
+    def zmen_animaciu(self, nova_animacia_id: str):
+        if nova_animacia_id in self.CACHE_ANIMACII:
+            self.id_aktualnej_animacie = nova_animacia_id
+            self._cas_animacie = 0
+        else:
+            raise ValueError(f"Animácia '{nova_animacia_id}' neexistuje!")
 
     def nacitaj_animacie(
         self,
-        kluc: str,
-        cesta_k_obrazkom: t.Optional[t.Union[Path, str]] = None,
+        root_priecinok_animacii: t.Union[Path, str],
     ):
         """
-        Načíta animácie z daného adresára pod určitým kľúčom.
-        Ak už existujú animácie v cache (alebo `cesta_k_obrazkom` je `None`), vráti ich.
+        Načíta všetky animácie z daného adresára.
+        Ak už existujú animácie v cache, vráti ich.
 
         `@classmethod` preto, aby každý potomok mal svoj vlastný cache.
         """
 
-        if cesta_k_obrazkom is None or kluc in self.CACHE_ANIMACII:
-            return self.CACHE_ANIMACII[kluc]
+        # konverzia na `Path` objekt
+        if isinstance(root_priecinok_animacii, str):
+            root_priecinok_animacii = Path(root_priecinok_animacii)
 
-        self.CACHE_ANIMACII[kluc] = []
-        for obrazok in (self.ASSETY_ROOT / cesta_k_obrazkom).iterdir():
-            obrazok = pygame.image.load(obrazok).convert_alpha()
-            self.CACHE_ANIMACII[kluc].append(obrazok)
+        for animacia_priecinok in root_priecinok_animacii.iterdir():
+            # /<root_priecinok_animacii>/<id_animacie>/0..n.png
+            id_animacie = animacia_priecinok.name
 
-        return self.CACHE_ANIMACII[kluc]
+            self.CACHE_ANIMACII[id_animacie] = []
+            if not animacia_priecinok.exists():
+                raise ValueError(f"Adresár animácií `{animacia_priecinok}` neexistuje!")
+
+            # načítame všetky animácie a uložíme do cache
+            for subor_frame in animacia_priecinok.iterdir():
+                obrazok = pygame.image.load(subor_frame).convert_alpha()
+                self.CACHE_ANIMACII[id_animacie].append(obrazok)
 
     @property
     def animacie(self):
-        if self.animacia_id is None:
-            return []
+        """
+        Vráti sekvenciu (zoznam) obrázkov aktuálnej animácie.
+        """
 
-        return self.nacitaj_animacie(self.animacia_id)
+        try:
+            return self.CACHE_ANIMACII[self.id_aktualnej_animacie]
+        except KeyError:
+            raise ValueError(f"Animácia '{self.id_aktualnej_animacie}' neexistuje!")
+
+    def prehrat_animaciu(self, animacia_id: str):
+        """
+        Prehrá animáciu jedenkrát a potom sa vráti k predchádzajúcej animácii.
+        """
+
+        self._predchadzajuca_animacia = self.id_aktualnej_animacie
+        self.zmen_animaciu(animacia_id)
+        self._aktualna_je_jednorazova = True
 
     def update(self):
-        if self.animacia_id is None:
+        if self.id_aktualnej_animacie is None:
             return super().update()
         if self.animuj:
-            self.cas_animacie += 1
+            self._cas_animacie += 1
 
-        # aktualizujeme originálny obrázok
-        self.originalny_obrazok = self.animacie[
-            self.cas_animacie // 10 % len(self.animacie)
-        ].copy()
+        pocet_framov = len(self.animacie)
+        index = self._cas_animacie // 10 % pocet_framov
+
+        # kontrola ukončenia jednorazovej animácie - čakáme na koniec celej animácie
+        if self._aktualna_je_jednorazova and self._cas_animacie >= pocet_framov * 10:
+            self._aktualna_je_jednorazova = False
+            self.zmen_animaciu(self._predchadzajuca_animacia)  # vrátime sa na pôvodnú
+
+        # načítanie aktuálneho obrázku animácie (ak index existuje)
+        try:
+            self.originalny_obrazok = self.animacie[index].copy()
+        except IndexError:
+            print(
+                f"Animácia '{self.id_aktualnej_animacie}' s indexom `{index}` nemá dostatočný počet obrázkov (alebo je neplatný index)."
+            )
+
+            # fallback na prvý obrázok, aby nespadla celá hra:
+            self.originalny_obrazok = self.animacie[0].copy()
 
         # otočenie
         if self.je_otoceny:

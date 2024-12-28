@@ -82,12 +82,16 @@ class Level(Scena):
         )
         self.tmavy_povrch.fill((0, 0, 0))
 
-    def skontroluj_kolizie(self):
+    def hyb_entitami(self):
+        """
+        Kontroluje kolízie entít a pohybuje ich, ak je to možné.
+        """
+
         if not self.steny_maska:
             return
 
         for entita in self.entity:
-            if not isinstance(entita, Entita) or not entita.velocita.length():
+            if not isinstance(entita, Entita) or not entita.moze_ist:
                 continue
 
             # pohyb po X osi
@@ -111,7 +115,7 @@ class Level(Scena):
 
         super().update()
         Kamera.sleduj_entitu(self.hrac)
-        self.skontroluj_kolizie()
+        self.hyb_entitami()
 
     def draw(self, surface: pygame.Surface):
         tmavy_povrch = self.tmavy_povrch.copy()

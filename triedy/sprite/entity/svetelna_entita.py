@@ -14,14 +14,16 @@ class SvetelnaEntita(Entita):
         self,
         pozicia: t.Tuple[int, int],
         velkost: t.Tuple[int, int],
-        animacia_id: t.Optional[str] = None,
-        cesta_k_obrazkom: t.Optional[t.Union[Path, str]] = None,
+        root_priecinok_animacii: t.Union[Path, str],
+        animacia_id: str = "chill",
         rychlost=1.0,
         radius_svetla=80,
         intenzita_svetla=1.0,
         farba_svetla=(255, 255, 255),
     ):
-        super().__init__(pozicia, velkost, animacia_id, cesta_k_obrazkom, rychlost)
+        super().__init__(
+            pozicia, root_priecinok_animacii, velkost, animacia_id, rychlost
+        )
         self.svetlo = Svetlo(
             self.rect.center,
             radius_svetla,
