@@ -8,9 +8,9 @@ class Fakla(SvetelnaEntita):
         super().__init__(
             pozicia,
             self.ASSETY_ROOT / "sprite" / "fakla",
-            radius_svetla=80,
-            intenzita_svetla=0.75,
-            farba_svetla=(255, 100, 0),
+            radius_svetla=60,
+            intenzita_svetla=1.0,
+            farba_svetla=(255, 255, 0),
         )
 
     

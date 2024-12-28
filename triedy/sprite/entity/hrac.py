@@ -24,6 +24,9 @@ class Hrac(SvetelnaEntita):
             rychlost=0.5,
         )
 
+        self.hp = 100
+        """Zdravie hráča."""
+
     def spracuj_event(self, event: pygame.event.Event, aktualna_scena: "Scena"):
         if event.type == pygame.KEYDOWN:
             # pohyb

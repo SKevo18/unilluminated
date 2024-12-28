@@ -13,6 +13,7 @@ class Svetlo:
         self,
         pozicia: t.Tuple[int, int],
         radius=80,
+        rozsah_pulzovania=3,
         intenzita=1.0,
         farba=(255, 255, 255),
     ):
@@ -20,6 +21,8 @@ class Svetlo:
         """Pozícia svetla vo "world space"."""
         self.originalny_radius = radius
         """Pôvodný rádius svetla v pixeloch (používa sa pre animáciu pulzovania)."""
+        self.rozsah_pulzovania = rozsah_pulzovania
+        """Rozsah pulzovania rádiusu svetla v pixeloch."""
         self.intenzita = intenzita
         """Intenzita svetla."""
         self.farba = farba
@@ -37,7 +40,10 @@ class Svetlo:
         Vytvorí povrch pre svetlo (svetelný kruh).
         """
         # prispôsobiť radius zoomu
-        radius = round(self._radius * Kamera.PRIBLIZENIE)
+        radius = max(
+            1,  # ak je radius príliš malý, musí byť aspoň 1
+            round(self._radius * Kamera.PRIBLIZENIE),
+        )
         povrch = pygame.Surface((radius * 2, radius * 2), pygame.SRCALPHA)
 
         # 20 segmentov v gradiente (ak ich je veľa, hra seká)
@@ -62,8 +68,8 @@ class Svetlo:
         # pulzovanie svetla = zmena radiusu +- 1
         self._radius += -0.1 if self._pulzuje_naspat else 0.1
         if (
-            self._radius < self.originalny_radius - 5
-            or self._radius > self.originalny_radius + 5
+            self._radius < self.originalny_radius - self.rozsah_pulzovania
+            or self._radius > self.originalny_radius + self.rozsah_pulzovania
         ):
             self._pulzuje_naspat = not self._pulzuje_naspat
 

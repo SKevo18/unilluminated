@@ -3,10 +3,10 @@ import typing as t
 from random import choice
 import pygame
 
-from triedy.sprite.entity.entita import Entita
+from triedy.sprite.entity.prisera import Prisera
 
 
-class OdrazajucaPrisera(Entita):
+class OdrazajucaPrisera(Prisera):
     """
     Príšera, ktorá sa odráža od stien.
     """

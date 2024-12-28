@@ -2,10 +2,10 @@ import typing as t
 
 import pygame
 
-from triedy.sprite.entity.svetelna_entita import SvetelnaEntita
+from triedy.sprite.entity.prisera import Prisera
 
 
-class PriamociaraPrisera(SvetelnaEntita):
+class PriamociaraPrisera(Prisera):
     """
     Príšera, ktorá sa pohybuje priamo smerom k hráčovi.
     """
@@ -17,9 +17,10 @@ class PriamociaraPrisera(SvetelnaEntita):
         super().__init__(
             pozicia,
             self.ASSETY_ROOT / "sprite" / "prisera",
-            radius_svetla=20,
+            radius_svetla=3,
+            rozsah_pulzovania=5,
             intenzita_svetla=1.0,
-            farba_svetla=(100, 0, 0),
+            farba_svetla=(255, 0, 0),
             rychlost=0.3,
         )
 

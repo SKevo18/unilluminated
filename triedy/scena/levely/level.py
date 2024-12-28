@@ -10,8 +10,9 @@ from triedy.sprite.podlaha import Podlaha
 from triedy.sprite.stena import Stena
 from triedy.sprite.entity.hrac import Hrac
 from triedy.sprite.entity.entita import Entita
-from triedy.sprite.entity.odrazajuca_prisera import OdrazajucaPrisera
 from triedy.sprite.entity.svetelna_entita import SvetelnaEntita
+from triedy.sprite.entity.prisera import Prisera
+from triedy.sprite.entity.odrazajuca_prisera import OdrazajucaPrisera
 from triedy.sprite.entity.priamociara_prisera import PriamociaraPrisera
 
 
@@ -39,8 +40,8 @@ class Level(Scena):
         self.tmavy_povrch: pygame.Surface
         """Tmavý overlay pre celý level, na ktorý sa vykreslí svetlo."""
 
-        self.text_hp = Text((100, 100), "HP: 100")
-        """Textový objekt pre zobrazenie HP."""
+        self.text_hp = Text((10, 10), "HP: 100")
+        """Textový objekt pre zobrazenie HP. Predvolene 100 - mení sa iba vtedy, ak sa hráč zraní."""
         self.ui_elementy.add(self.text_hp)
 
     def nacitat_level(self):
@@ -104,7 +105,7 @@ class Level(Scena):
 
     def kontroluj_pohyb(self):
         """
-        Kontroluje pohyb všetkých entít.
+        Kontroluje pohyb a kolízie všetkých entít.
         """
         # level ešte nie je úplne načítaný
         if not self.hrac or not self.solidna_maska:
@@ -114,12 +115,23 @@ class Level(Scena):
         # ktoré sa pohybujú priamo smerom k hráčovi
         PriamociaraPrisera.ciel = self.hrac.rect.center
 
+        # každá entita si kontroluje pohyb a kolízie na základe
+        # globálnej solídnej masky aktuálneho levelu
         for entita in self.entity:
             if isinstance(entita, Entita):
                 entita.pohyb(self.solidna_maska)
 
     def pred_zmenou(self):
         self.nacitat_level()
+
+    def pred_zmenou_na_dalsiu(self):
+        # upraceme po sebe, aby tam nič nebolo
+        # ak sa vrátime na ten istý level:
+        self.empty()
+        self.entity.empty()
+        # UI elementy ostávajú, pretože sa počet nemení počas behu hry
+        # ...ale stále sa musí resetovať HP na 100
+        self.text_hp.text = "HP: 100"
 
     def update(self):
         if not self.hrac:
@@ -128,6 +140,7 @@ class Level(Scena):
         super().update()
         Kamera.sleduj_entitu(self.hrac)
         self.kontroluj_pohyb()
+        self.kontroluj_kolizie_s_nepriatelmi()
 
     def draw(self, surface: pygame.Surface):
         # kópia z originálu, ktorú môžme upraviť
@@ -140,27 +153,50 @@ class Level(Scena):
             key=lambda sprite: [
                 not isinstance(
                     sprite,
-                    Podlaha,  # podlaha sa vykresľuje prvá
+                    Podlaha,  # podlaha sa vykresľuje vždy prvá
                 ),
-                sprite.rect.y,  # ...inak sa kreslí podľa Y
+                # ...inak sa kreslí podľa Y súradnice
+                # pre ilúziu hĺbky
+                sprite.rect.y,
             ],
         ):
-            # vykreslenie svetla
-            if isinstance(sprite, SvetelnaEntita):
-                sprite.svetlo.aplikuj_na_tmu(tmavy_povrch)
-
             # vykreslenie sprite, s ohľadom na zoom a pozíciu kamery
             surface.blit(sprite.image, Kamera.aplikuj_na_sprite(sprite))
 
+        # svetlo sa vykresľuje zvlášť v pôvodnom poradí,
+        # tam sa nevzťahuje sortovanie Y pretože chcem aby
+        # sa svetlá správne miešali s ostatnými svetlami
+        for sprite in self.sprites():
+            if isinstance(sprite, SvetelnaEntita):
+                sprite.svetlo.aplikuj_na_tmu(tmavy_povrch)
+
+        # vykreslenie "tmy"
         surface.blit(
             tmavy_povrch,
             (0, 0),
             # ak miešame pixel, preferujeme ten s menšou transparentnosťou
             # vďaka tomu sa "vyreže" svetlo do tmy
-            # (pretože svetlo má menšiu transparentnosť ako tma, bude pri vykresľovan�� preferované)
+            # (pretože svetlo má menšiu transparentnosť ako tma, bude pri vykresľovaní preferované)
             special_flags=pygame.BLEND_RGBA_MIN,
         )
 
-        # vykreslenie UI elementov na konci (v screen-space)
+        # vykreslenie UI elementov ako posledných
         for ui_element in self.ui_elementy:
+            ui_element.update()  # vykreslenie (tu neexistuje `draw`)
             surface.blit(ui_element.image, ui_element.rect)
+
+    def kontroluj_kolizie_s_nepriatelmi(self):
+        """
+        Kontroluje kolízie hráča s nepriateľmi a berie HP.
+        """
+
+        if not self.hrac:
+            return
+
+        for entita in self.entity:
+            if isinstance(entita, Prisera) and self.hrac.rect.colliderect(entita.rect):
+                self.hrac.hp = max(0, self.hrac.hp - 1)
+                self.text_hp.text = f"HP: {self.hrac.hp}"
+
+                if self.hrac.hp == 0:
+                    self.zmen_scenu(0)

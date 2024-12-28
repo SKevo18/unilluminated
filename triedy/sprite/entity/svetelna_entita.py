@@ -18,6 +18,7 @@ class SvetelnaEntita(Entita):
         animacia_id: str = "chill",
         rychlost=1.0,
         radius_svetla=80,
+        rozsah_pulzovania=3,
         intenzita_svetla=1.0,
         farba_svetla=(255, 255, 255),
     ):
@@ -27,6 +28,7 @@ class SvetelnaEntita(Entita):
         self.svetlo = Svetlo(
             self.rect.center,
             radius_svetla,
+            rozsah_pulzovania,
             intenzita_svetla,
             farba_svetla,
         )

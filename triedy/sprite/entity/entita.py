@@ -39,7 +39,7 @@ class Entita(AnimovanySprite):
         self.rychlost = rychlost
         """Rýchlosť pohybu."""
         self.moze_ist = True
-        """Ak je `True`, entita má povolené sa hýbať (pohyb je kontrolovaný v `Level.hyb_entitami()`)."""
+        """Ak je `True`, entita má povolené sa hýbať (pohyb je kontrolovaný v `Level.kontroluj_pohyb()`)."""
 
         self.maska = pygame.Mask((self.rect.width, maska_vyska), True)
         """Maska pre detekciu kolízií. Neprekrýva celé telo, aby bola zachovaná ilúzia priestoru (torso bude hore trčať)."""
