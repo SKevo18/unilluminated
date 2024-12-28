@@ -5,9 +5,11 @@ import nastavenia as n
 from triedy.scena import Scena
 from triedy.kamera import Kamera
 from triedy.sprite import Sprite, Podlaha, Stena
-from triedy.sprite.entity import Hrac
+from triedy.sprite.entity.hrac import Hrac
 from triedy.sprite.entity.entita import Entita
+from triedy.sprite.entity.odrazajuca_prisera import OdrazajucaPrisera
 from triedy.sprite.entity.svetelna_entita import SvetelnaEntita
+from triedy.sprite.entity.priamociara_prisera import PriamociaraPrisera
 
 
 class Level(Scena):
@@ -16,17 +18,23 @@ class Level(Scena):
     """
 
     LEVELY_ROOT = Sprite.ASSETY_ROOT / "levely"
+    """Priečinok assetov s XML súbormi máp (pre pytmx)"""
 
     def __init__(self, mapa_id: str):
         super().__init__()
         self.mapa_id = mapa_id
-        self.hrac = None
-        self.mapa = None
-        self.steny_maska = None
-        self.entity = pygame.sprite.Group()
+        """ID mapy v assetoch."""
 
+        self.hrac = None
+        """Hráč."""
+        self.mapa = None
+        """Mapa levelu (Tiled)."""
+        self.solidna_maska = None
+        """Maska pre detekciu kolízií."""
+        self.entity = pygame.sprite.Group()
+        """Zoznam všetkých entít v leveli."""
         self.tmavy_povrch: pygame.Surface
-        """Tmavý overlay pre celý level."""
+        """Tmavý overlay pre celý level, na ktorý sa vykreslí svetlo."""
 
     def nacitat_level(self):
         self.mapa = pytmx.load_pygame(
@@ -63,12 +71,17 @@ class Level(Scena):
 
         # konverzia dočasného povrchu stien na masku
         # (detekcia kolízií cez masky je oveľakrát rýchlejšia a nespôsobuje problémy s výkonom)
-        self.steny_maska = pygame.mask.from_surface(maska_povrch)
+        self.solidna_maska = pygame.mask.from_surface(maska_povrch)
 
         # spracovanie entít
         for obj in entity:
-            self.hrac = Hrac((obj.x, obj.y))
-            self.entity.add(self.hrac)
+            if obj.name == "hrac":
+                self.hrac = Hrac((obj.x, obj.y))
+                self.entity.add(self.hrac)
+            elif obj.name == "priamociara_prisera":
+                self.entity.add(PriamociaraPrisera((obj.x, obj.y)))
+            elif obj.name == "odrazajuca_prisera":
+                self.entity.add(OdrazajucaPrisera((obj.x, obj.y)))
         self.add(self.entity)
 
         # celý level je zakrytý tmavým povrchom
@@ -82,29 +95,21 @@ class Level(Scena):
         )
         self.tmavy_povrch.fill((0, 0, 0))
 
-    def hyb_entitami(self):
+    def kontroluj_pohyb(self):
         """
-        Kontroluje kolízie entít a pohybuje ich, ak je to možné.
+        Kontroluje pohyb všetkých entít.
         """
-
-        if not self.steny_maska:
+        # level ešte nie je úplne načítaný
+        if not self.hrac or not self.solidna_maska:
             return
 
+        # nastavenie cielu pre všetky príšery
+        # ktoré sa pohybujú priamo smerom k hráčovi
+        PriamociaraPrisera.ciel = self.hrac.rect.center
+
         for entita in self.entity:
-            if not isinstance(entita, Entita) or not entita.moze_ist:
-                continue
-
-            # pohyb po X osi
-            nove_x = entita.rect.x + entita.velocita.x
-            maska_pozicia = (nove_x, entita.rect.y + entita.maska_offset[1])
-            if not self.steny_maska.overlap(entita.maska, maska_pozicia):
-                entita.rect.x = nove_x
-
-            # pohyb po Y osi
-            nove_y = entita.rect.y + entita.velocita.y
-            maska_pozicia = (entita.rect.x, nove_y + entita.maska_offset[1])
-            if not self.steny_maska.overlap(entita.maska, maska_pozicia):
-                entita.rect.y = nove_y
+            if isinstance(entita, Entita):
+                entita.pohyb(self.solidna_maska)
 
     def pred_zmenou(self):
         self.nacitat_level()
@@ -115,7 +120,7 @@ class Level(Scena):
 
         super().update()
         Kamera.sleduj_entitu(self.hrac)
-        self.hyb_entitami()
+        self.kontroluj_pohyb()
 
     def draw(self, surface: pygame.Surface):
         tmavy_povrch = self.tmavy_povrch.copy()
@@ -143,6 +148,6 @@ class Level(Scena):
             (0, 0),
             # ak miešame pixel, preferujeme ten s menšou transparentnosťou
             # vďaka tomu sa "vyreže" svetlo do tmy
-            # (pretože svetlo má menšiu transparentnosť ako tma, bude pri vykresľovaní preferované)
+            # (pretože svetlo má menšiu transparentnosť ako tma, bude pri vykresľovan�� preferované)
             special_flags=pygame.BLEND_RGBA_MIN,
         )

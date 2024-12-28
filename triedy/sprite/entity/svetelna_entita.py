@@ -13,8 +13,8 @@ class SvetelnaEntita(Entita):
     def __init__(
         self,
         pozicia: t.Tuple[int, int],
-        velkost: t.Tuple[int, int],
         root_priecinok_animacii: t.Union[Path, str],
+        velkost=(16, 16),
         animacia_id: str = "chill",
         rychlost=1.0,
         radius_svetla=80,

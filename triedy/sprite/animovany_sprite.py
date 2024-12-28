@@ -11,7 +11,7 @@ class AnimovanySprite(Sprite):
     Predstavuje animovaný sprite.
     """
 
-    CACHE_ANIMACII: t.Dict[str, t.List[pygame.Surface]] = {}
+    CACHE_ANIMACII: t.Dict[str, t.Dict[str, t.List[pygame.Surface]]] = {}
 
     def __init__(
         self,
@@ -21,6 +21,7 @@ class AnimovanySprite(Sprite):
         animacia_id="chill",
     ):
         super().__init__(pozicia, velkost, None)
+        self.root_priecinok = str(root_priecinok_animacii)
         self.id_aktualnej_animacie = animacia_id
         """ID aktuálnej animácie ktorá sa prehráva."""
         self.animuj = True
@@ -33,42 +34,48 @@ class AnimovanySprite(Sprite):
         self._cas_animacie = 0
         """Čas animácie v milisekundách (pre výpočet indexu)."""
 
+        if self.root_priecinok not in self.CACHE_ANIMACII:
+            self.CACHE_ANIMACII[self.root_priecinok] = {}
+
         self.nacitaj_animacie(root_priecinok_animacii)
 
     def zmen_animaciu(self, nova_animacia_id: str):
-        if nova_animacia_id in self.CACHE_ANIMACII:
+        if nova_animacia_id in self.CACHE_ANIMACII[self.root_priecinok]:
             self.id_aktualnej_animacie = nova_animacia_id
             self._cas_animacie = 0
         else:
             raise ValueError(f"Animácia '{nova_animacia_id}' neexistuje!")
 
+    @classmethod
     def nacitaj_animacie(
-        self,
+        cls,
         root_priecinok_animacii: t.Union[Path, str],
     ):
         """
         Načíta všetky animácie z daného adresára.
         Ak už existujú animácie v cache, vráti ich.
-
-        `@classmethod` preto, aby každý potomok mal svoj vlastný cache.
         """
 
         # konverzia na `Path` objekt
         if isinstance(root_priecinok_animacii, str):
             root_priecinok_animacii = Path(root_priecinok_animacii)
 
+        root_kluc = str(root_priecinok_animacii)
+        if root_kluc not in cls.CACHE_ANIMACII:
+            cls.CACHE_ANIMACII[root_kluc] = {}
+
         for animacia_priecinok in root_priecinok_animacii.iterdir():
             # /<root_priecinok_animacii>/<id_animacie>/0..n.png
             id_animacie = animacia_priecinok.name
 
-            self.CACHE_ANIMACII[id_animacie] = []
+            cls.CACHE_ANIMACII[root_kluc][id_animacie] = []
             if not animacia_priecinok.exists():
                 raise ValueError(f"Adresár animácií `{animacia_priecinok}` neexistuje!")
 
             # načítame všetky animácie a uložíme do cache
             for subor_frame in animacia_priecinok.iterdir():
                 obrazok = pygame.image.load(subor_frame).convert_alpha()
-                self.CACHE_ANIMACII[id_animacie].append(obrazok)
+                cls.CACHE_ANIMACII[root_kluc][id_animacie].append(obrazok)
 
     @property
     def animacie(self):
@@ -77,7 +84,7 @@ class AnimovanySprite(Sprite):
         """
 
         try:
-            return self.CACHE_ANIMACII[self.id_aktualnej_animacie]
+            return self.CACHE_ANIMACII[self.root_priecinok][self.id_aktualnej_animacie]
         except KeyError:
             raise ValueError(f"Animácia '{self.id_aktualnej_animacie}' neexistuje!")
 

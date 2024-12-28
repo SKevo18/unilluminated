@@ -7,7 +7,6 @@ class Fakla(SvetelnaEntita):
     def __init__(self, pozicia: t.Tuple[int, int]):
         super().__init__(
             pozicia,
-            (16, 16),
             self.ASSETY_ROOT / "sprite" / "fakla",
             radius_svetla=80,
             intenzita_svetla=0.75,

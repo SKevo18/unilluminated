@@ -15,7 +15,7 @@ class Tlacidlo(Sprite):
         self,
         pozicia: t.Tuple[int, int],
         text: str,
-        po_kliknuti: t.Callable[[], None],
+        po_kliknuti: t.Callable[[], t.Any],
         velkost = (200, 100),
         velkost_textu: t.Optional[int] = None,
     ):

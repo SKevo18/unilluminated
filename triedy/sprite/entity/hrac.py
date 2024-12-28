@@ -18,7 +18,6 @@ class Hrac(SvetelnaEntita):
     def __init__(self, pozicia: t.Tuple[int, int]):
         super().__init__(
             pozicia,
-            (16, 16),
             self.ASSETY_ROOT / "sprite" / "hrac",
             # prevolene je animácia behu, ktorá sa iba pozastaví ak sa hráč nepohybuje:
             animacia_id="bez",
@@ -47,15 +46,18 @@ class Hrac(SvetelnaEntita):
 
             # položenie fakle
             elif event.key == pygame.K_SPACE:
+                # nemôžme položiť faklu ak pokladáme alebo berieme inú
+                if self.id_aktualnej_animacie == "poloz":
+                    return
+
                 # animácia
                 self.prehrat_animaciu("poloz")
 
-                # ak je neďaleko fakle, odobereme ju
-                for fakla in aktualna_scena.sprites():
-                    if isinstance(fakla, Fakla):
-                        if fakla.rect.colliderect(self.rect):
-                            aktualna_scena.remove(fakla)
-                            break
+                # ak je neďaleko fakľa, odobereme ju
+                for sprite in aktualna_scena.sprites():
+                    if isinstance(sprite, Fakla) and sprite.rect.colliderect(self.rect):
+                        aktualna_scena.remove(sprite)
+                        break
                 # inak položíme novú, zarovnanú podľa mriežky
                 else:
                     podla_mriezky = (

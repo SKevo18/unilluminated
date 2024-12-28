@@ -11,6 +11,7 @@ import nastavenia as n
 from triedy.scena import ManazerScen, HlavneMenu, Nastavenia
 from triedy.scena.levely import Level
 from triedy.sprite.sprite import Sprite
+from triedy.sprite.entity.priamociara_prisera import PriamociaraPrisera
 
 
 class HernaSlucka:
