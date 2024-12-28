@@ -71,7 +71,8 @@ class Level(Scena):
             self.entity.add(self.hrac)
         self.add(self.entity)
 
-        # zakrytie celého levelu tmavým povrchom
+        # celý level je zakrytý tmavým povrchom
+        # na ktorý sa vykreslí svetlo
         self.tmavy_povrch = pygame.Surface(
             (
                 n.VELKOST_OKNA[0],
