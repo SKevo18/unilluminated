@@ -1,5 +1,4 @@
-import asyncio
-
 from triedy.herna_slucka import HernaSlucka
 
-asyncio.run(HernaSlucka.spusti())
+if __name__ == "__main__":
+    HernaSlucka.spusti()

@@ -1,19 +1,31 @@
 import typing as t
 
 import nastavenia as n
-from triedy.sprity.entity.svetelna_entita import SvetelnaEntita
+from triedy.mixer import Mixer
+from triedy.sprity.entity.entita import Entita
 
 
-class Truhla(SvetelnaEntita):
+class Truhla(Entita):
     def __init__(self, pozicia: t.Tuple[int, int]):
         super().__init__(
             pozicia,
             n.ASSETY_ROOT / "sprite" / "truhla",
             animacia_id="zatvorena",
-            radius_svetla=40,
-            intenzita_svetla=0.5,
-            farba_svetla=(0, 255, 255),
         )
 
-    def otvor(self):
-        self.animacia_id = "otvorena"
+    def otvor(self) -> bool:
+        """
+        Pokúsi sa otvoriť truhlu.
+        Vracia informáciu o tom, či bola truhla úspešne otvorená.
+        """
+
+        if not self.je_otvorena:
+            self.id_aktualnej_animacie = "otvorena"
+            Mixer.prehrat_zvuk("otvor")
+            return True
+
+        return False
+
+    @property
+    def je_otvorena(self) -> bool:
+        return self.id_aktualnej_animacie == "otvorena"

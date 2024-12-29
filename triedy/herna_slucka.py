@@ -4,7 +4,6 @@ Modul pre hernú slučku.
 
 import typing as t
 
-import asyncio
 import pygame
 
 import nastavenia as n
@@ -13,6 +12,7 @@ from triedy.sceny.manazer_scen import ManazerScen
 from triedy.sceny.levely.level import Level
 from triedy.sceny.hlavne_menu import HlavneMenu
 from triedy.sceny.nastavenia import Nastavenia
+from triedy.sceny.koniec_hry import KoniecHry
 from triedy.sprity.sprite import Sprite
 
 
@@ -26,7 +26,7 @@ class HernaSlucka:
     """Okno, v ktorom sa celá hra vykresľuje."""
 
     @staticmethod
-    async def spusti():
+    def spusti():
         """
         Spustí hlavnú hernú slučku.
         """
@@ -46,7 +46,6 @@ class HernaSlucka:
 
             pygame.display.flip()
             clock.tick(60)
-            await asyncio.sleep(0)
 
         pygame.quit()
 
@@ -84,7 +83,12 @@ class HernaSlucka:
         """
         Načíta všetky scény a nastaví prvú scénu ako aktuálnu.
         """
-        ManazerScen.VSETKY_SCENY = [HlavneMenu(), Nastavenia(), Level("level_1")]
+        ManazerScen.VSETKY_SCENY = [
+            HlavneMenu(),
+            Nastavenia(),
+            Level("level_1"),
+            KoniecHry(),
+        ]
         ManazerScen.zmen_scenu(0)
 
     @staticmethod

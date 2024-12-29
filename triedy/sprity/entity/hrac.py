@@ -23,11 +23,15 @@ class Hrac(SvetelnaEntita):
             n.ASSETY_ROOT / "sprite" / "hrac",
             # prevolene je animácia behu, ktorá sa iba pozastaví ak sa hráč nepohybuje:
             animacia_id="bez",
-            rychlost=0.5,
+            rychlost=1.0,
         )
 
-        self.hp = 100
+        self.ma_kluc = False
+        """Či má hráč kľúč na odomknutie dverí do ďalšieho levelu."""
+        self.zivoty = 3
         """Zdravie hráča."""
+        self.cas_nesmrtelnosti = 0
+        """Odpočítava sa každý frame, ak je viac ako 1, hráč nemôže stratiť život."""
         self.aktualny_zvuk_krokov = None
         """Zvuk krokov, ktorý sa momentálne prehráva (ak prestaneme chodiť, zastavíme aj tento zvuk)"""
 
@@ -35,15 +39,15 @@ class Hrac(SvetelnaEntita):
         if event.type == pygame.KEYDOWN:
             # pohyb
             if event.key == pygame.K_LEFT:
-                self.velocita.x = -1
+                self.velocita.x = -1 * self.rychlost
                 self.je_otoceny = False
             elif event.key == pygame.K_RIGHT:
-                self.velocita.x = 1
+                self.velocita.x = 1 * self.rychlost
                 self.je_otoceny = True
             elif event.key == pygame.K_UP:
-                self.velocita.y = -1
+                self.velocita.y = -1 * self.rychlost
             elif event.key == pygame.K_DOWN:
-                self.velocita.y = 1
+                self.velocita.y = 1 * self.rychlost
 
             # približovanie kamery
             elif event.key == pygame.K_p:
@@ -88,7 +92,31 @@ class Hrac(SvetelnaEntita):
             elif event.key == pygame.K_DOWN and self.velocita.y > 0:
                 self.velocita.y = 0
 
+    def ublizit(self) -> bool:
+        """
+        Odoberie hráčovi jeden život a nastaví čas nesmrtelnosti na 40.
+
+        Ak vráti `True`, znamená to že hráč sa úspešne zranil (t. j. nebol nesmrteľný).
+        """
+
+        if self.cas_nesmrtelnosti > 0:
+            return False
+
+        self.cas_nesmrtelnosti = 40
+        self.svetlo.farba = (255, 100, 0)  # aby sme vedeli že hráč sa zranil
+        self.zivoty -= 1
+        Mixer.prehrat_zvuk("ublizenie")
+
+        return True
+
     def update(self):
+        # odoberieme čas nesmrtelnosti
+        if self.cas_nesmrtelnosti > 0:
+            self.cas_nesmrtelnosti -= 1
+        else:
+            # hráč sa už môže zraniť, resetujeme svetlo
+            self.svetlo.farba = (255, 255, 255)
+
         pohybuje_sa = self.velocita.length() > 0
 
         # hráčovi povolíme pohyb iba ak máme animáciu behu a nestojíme
@@ -96,13 +124,11 @@ class Hrac(SvetelnaEntita):
         self.moze_ist = self.id_aktualnej_animacie == "bez" and pohybuje_sa
 
         if self.moze_ist:
-            # ak sa pohybujeme, prehráme zvuk
-            zvuk = Mixer.prehrat_zvuk("kroky")
-            if zvuk:  # ak je `None`, znamená to že sa prehráva iný zvuk (t. j. zvuk krokov sa neprehral)
-                self.aktualny_zvuk_krokov = zvuk
+            if not self.aktualny_zvuk_krokov:
+                self.aktualny_zvuk_krokov = Mixer.prehrat_zvuk("kroky")
         elif self.aktualny_zvuk_krokov:
-            # inak, ak nechodíme a prehráva sa zvuk, zastavíme ho:
             self.aktualny_zvuk_krokov.stop()
+            self.aktualny_zvuk_krokov = None
 
         # ak sa pohybujeme, animujeme pohyb
         # ak je animácia iná ako beh, prioritne prehrávame tú (napr. niečo položíme alebo útok a podobne)

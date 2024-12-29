@@ -42,9 +42,7 @@ class Mixer:
         Prehrá určitý zvuk jedenkrát.
         """
 
-        # ak nie sú povolené zvuky alebo sa prehráva niečo iné
-        # (aby sa zvuky nemiešali)
-        if not Mixer.zvuky_povolene or pygame.mixer.get_busy():
+        if not Mixer.zvuky_povolene:
             return
 
         try:
@@ -60,7 +58,7 @@ class Mixer:
         Začne prehrávať hudbu na pozadí
         """
 
-        # ak nie je povolená hudba alebo sa prehráva niečo iné
+        # ak nie je povolená hudba alebo sa už hudba prehráva
         # (aby sa zvuky nemiešali)
         if not Mixer.hudba_povolena or pygame.mixer.music.get_busy():
             return

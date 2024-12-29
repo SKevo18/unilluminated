@@ -14,7 +14,7 @@ from triedy.sprity.entity.svetelna_entita import SvetelnaEntita
 from triedy.sprity.entity.truhla import Truhla
 from triedy.sprity.podlaha import Podlaha
 from triedy.sprity.stena import Stena
-from triedy.ui.text import Text
+from triedy.ui.srdcia_pocitadlo import SrdciaPocitadlo
 
 
 class Level(Scena):
@@ -41,9 +41,9 @@ class Level(Scena):
         self.tmavy_povrch: pygame.Surface
         """Tmavý overlay pre celý level, na ktorý sa vykreslí svetlo."""
 
-        self.text_hp = Text((10, 10), "HP: 100")
-        """Textový objekt pre zobrazenie HP. Predvolene 100 - mení sa iba vtedy, ak sa hráč zraní."""
-        self.ui_elementy.add(self.text_hp)
+        self.pocitadlo_zivotov = SrdciaPocitadlo((10, 10), pocet_srdc=3)
+        """Textový objekt pre zobrazenie životom. Predvolene 3 - mení sa iba vtedy, ak sa hráč zraní."""
+        self.ui_elementy.add(self.pocitadlo_zivotov)
 
     def nacitat_level(self):
         self.mapa = pytmx.load_pygame(str(self.LEVELY_ROOT / f"{self.mapa_id}.tmx"))
@@ -69,16 +69,16 @@ class Level(Scena):
             pygame.SRCALPHA,
         )
 
+        maska_surface = pygame.Surface(
+            (16, 16),
+            masks=(0, 0, 0),  # dočasná maska pre solidné objekty
+        )
         for x, y, image in steny.tiles():
             pozicia = (x * self.mapa.tilewidth, y * self.mapa.tileheight)
             sprite = Stena(pozicia)
             sprite.image = image
             self.add(sprite)
-            maska_povrch.blit(image, pozicia)
-
-        # konverzia dočasného povrchu stien na masku
-        # (detekcia kolízií cez masky je oveľakrát rýchlejšia a nespôsobuje problémy s výkonom)
-        self.solidna_maska = pygame.mask.from_surface(maska_povrch)
+            maska_povrch.blit(maska_surface, pozicia)
 
         # spracovanie entít
         for obj in entity:
@@ -89,11 +89,19 @@ class Level(Scena):
                 self.entity.add(PriamociaraPrisera((obj.x, obj.y)))
             elif obj.name == "odrazajuca_prisera":
                 self.entity.add(OdrazajucaPrisera((obj.x, obj.y)))
+
+            # solidné:
             elif obj.name == "truhla":
                 self.entity.add(Truhla((obj.x, obj.y)))
+                maska_povrch.blit(maska_surface, (obj.x, obj.y))
             elif obj.name == "dvere":
                 self.entity.add(Dvere((obj.x, obj.y)))
+                maska_povrch.blit(maska_surface, (obj.x, obj.y))
         self.add(self.entity)
+
+        # konverzia dočasného povrchu stien na masku
+        # (detekcia kolízií cez masky je oveľakrát rýchlejšia a nespôsobuje problémy s výkonom)
+        self.solidna_maska = pygame.mask.from_surface(maska_povrch)
 
         # celý level je zakrytý tmavým povrchom
         # na ktorý sa vykreslí svetlo
@@ -114,9 +122,7 @@ class Level(Scena):
         # ak sa vrátime na ten istý level:
         self.empty()
         self.entity.empty()
-        # UI elementy ostávajú, pretože sa počet nemení počas behu hry
-        # ...ale stále sa musí resetovať HP na 100
-        self.text_hp.text = "HP: 100"
+        self.hrac.zivoty = 3
 
     def update(self):
         if not self.hrac:
@@ -128,6 +134,7 @@ class Level(Scena):
         self.kontroluj_pohyb()
         self.kontroluj_kolizie_s_nepriatelmi()
         self.kontroluj_kolizie_s_truhlami()
+        self.kontroluj_kolizie_s_dvermi()
 
     def kontroluj_pohyb(self):
         """
@@ -154,11 +161,11 @@ class Level(Scena):
 
         for entita in self.entity:
             if isinstance(entita, Prisera) and self.hrac.rect.colliderect(entita.rect):
-                self.hrac.hp = max(0, self.hrac.hp - 1)
-                self.text_hp.text = f"HP: {self.hrac.hp}"
-
-                if self.hrac.hp == 0:
-                    self.zmen_scenu(0)
+                if self.hrac.ublizit():
+                    self.pocitadlo_zivotov.pocet_srdc = self.hrac.zivoty
+                    if self.hrac.zivoty <= 0:
+                        self.zmen_scenu(-1) # posledná, KoniecHry
+                break
 
     def kontroluj_kolizie_s_truhlami(self):
         """
@@ -170,6 +177,22 @@ class Level(Scena):
                 zvacseny_rect = entita.rect.inflate(10, 10)
                 if zvacseny_rect.colliderect(self.hrac.rect):
                     entita.otvor()
+                    self.hrac.ma_kluc = True
+                    break
+
+    def kontroluj_kolizie_s_dvermi(self):
+        """
+        Kontroluje kolízie hráča s dvermi a otvára ich, ak má hráč kľúč.
+        """
+
+        for entita in self.entity:
+            if isinstance(entita, Dvere):
+                zvacseny_rect = entita.rect.inflate(2, 2)
+                if self.hrac.ma_kluc and zvacseny_rect.colliderect(self.hrac.rect):
+                    entita.otvor()
+                    self.hrac.ma_kluc = False
+                    self.zmen_scenu(self.aktualny_index_sceny() + 1)
+                    break
 
     def draw(self, surface: pygame.Surface):
         # kópia z originálu, ktorú môžme upraviť

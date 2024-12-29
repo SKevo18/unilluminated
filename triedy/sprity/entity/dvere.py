@@ -1,6 +1,7 @@
 import typing as t
 
 import nastavenia as n
+from triedy.mixer import Mixer
 from triedy.sprity.entity.svetelna_entita import SvetelnaEntita
 
 
@@ -16,4 +17,5 @@ class Dvere(SvetelnaEntita):
         )
 
     def otvor(self):
-        self.animacia_id = "otvorene"
+        self.id_aktualnej_animacie = "otvorene"
+        Mixer.prehrat_zvuk("otvor")

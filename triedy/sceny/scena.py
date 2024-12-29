@@ -19,9 +19,14 @@ class Scena(pygame.sprite.Group):
         self.ui_elementy = pygame.sprite.Group()
         """Skupina UI elementov."""
 
-    @classmethod
-    def zmen_scenu(cls, index: int):
+    @staticmethod
+    def zmen_scenu(index: int):
         ManazerScen.zmen_scenu(index)
+    
+
+    @staticmethod
+    def aktualny_index_sceny():
+        return ManazerScen.index_aktualnej_sceny
 
     def pred_zmenou(self):
         """
