@@ -2,7 +2,8 @@ import typing as t
 
 import pygame
 
-from triedy.sprite import Sprite
+import nastavenia as n
+from triedy.sprity.sprite import Sprite
 
 
 class Text(Sprite):
@@ -24,7 +25,7 @@ class Text(Sprite):
         self.pozadie = pozadie
 
         self.text_objekt = pygame.font.Font(
-            self.ASSETY_ROOT / "FiraCode.ttf", velkost_textu
+            n.ASSETY_ROOT / "FiraCode.ttf", velkost_textu
         ).render(text, True, farba, self.pozadie)
         super().__init__(pozicia, self.text_objekt.get_size())
 
@@ -44,5 +45,5 @@ class Text(Sprite):
 
         self._text = value
         self.text_objekt = pygame.font.Font(
-            self.ASSETY_ROOT / "FiraCode.ttf", self.velkost_textu
+            n.ASSETY_ROOT / "FiraCode.ttf", self.velkost_textu
         ).render(self._text, True, self.farba, self.pozadie)

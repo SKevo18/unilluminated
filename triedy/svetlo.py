@@ -1,4 +1,5 @@
 import typing as t
+
 import pygame
 
 from triedy.kamera import Kamera

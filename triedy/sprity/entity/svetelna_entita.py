@@ -1,7 +1,7 @@
 import typing as t
 from pathlib import Path
 
-from triedy.sprite.entity.entita import Entita
+from triedy.sprity.entity.entita import Entita
 from triedy.svetlo import Svetlo
 
 
@@ -15,7 +15,7 @@ class SvetelnaEntita(Entita):
         pozicia: t.Tuple[int, int],
         root_priecinok_animacii: t.Union[Path, str],
         velkost=(16, 16),
-        animacia_id: str = "chill",
+        animacia_id="chill",
         rychlost=1.0,
         radius_svetla=80,
         rozsah_pulzovania=3,

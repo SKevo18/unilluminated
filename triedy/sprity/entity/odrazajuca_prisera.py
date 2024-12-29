@@ -1,9 +1,10 @@
 import typing as t
-
 from random import choice
+
 import pygame
 
-from triedy.sprite.entity.prisera import Prisera
+import nastavenia as n
+from triedy.sprity.entity.prisera import Prisera
 
 
 class OdrazajucaPrisera(Prisera):
@@ -14,7 +15,7 @@ class OdrazajucaPrisera(Prisera):
     def __init__(self, pozicia: t.Tuple[int, int]):
         super().__init__(
             pozicia,
-            self.ASSETY_ROOT / "sprite" / "prisera",
+            n.ASSETY_ROOT / "sprite" / "prisera",
             rychlost=0.5,
         )
 

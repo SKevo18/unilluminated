@@ -2,7 +2,8 @@ import typing as t
 
 import pygame
 
-from triedy.sprite.entity.prisera import Prisera
+import nastavenia as n
+from triedy.sprity.entity.prisera import Prisera
 
 
 class PriamociaraPrisera(Prisera):
@@ -16,7 +17,7 @@ class PriamociaraPrisera(Prisera):
     def __init__(self, pozicia: t.Tuple[int, int]):
         super().__init__(
             pozicia,
-            self.ASSETY_ROOT / "sprite" / "prisera",
+            n.ASSETY_ROOT / "sprite" / "prisera",
             radius_svetla=3,
             rozsah_pulzovania=5,
             intenzita_svetla=1.0,

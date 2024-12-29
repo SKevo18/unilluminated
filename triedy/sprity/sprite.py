@@ -1,18 +1,18 @@
 import typing as t
 
 if t.TYPE_CHECKING:
-    from triedy.scena import Scena
+    from triedy.sceny.scena import Scena
 
 from pathlib import Path
 import pygame
+
+import nastavenia as n
 
 
 class Sprite(pygame.sprite.Sprite):
     """
     Predstavuje všetky objekty v hre.
     """
-
-    ASSETY_ROOT = Path(__file__).parent.parent.parent / "assets"
 
     def __init__(
         self,
@@ -44,7 +44,7 @@ class Sprite(pygame.sprite.Sprite):
         Vráti načítaný obrázok.
         """
 
-        obrazok = pygame.image.load(self.ASSETY_ROOT / cesta_k_obrazku).convert_alpha()
+        obrazok = pygame.image.load(n.ASSETY_ROOT / cesta_k_obrazku).convert_alpha()
         obrazok = pygame.transform.scale(obrazok, self.velkost)
 
         if self.je_otoceny:

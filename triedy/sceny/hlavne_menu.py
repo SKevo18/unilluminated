@@ -1,8 +1,9 @@
 import pygame
 
 import nastavenia as n
-from triedy.scena.scena import Scena
-from triedy.ui import Tlacidlo
+from triedy.mixer import Mixer
+from triedy.sceny.scena import Scena
+from triedy.ui.tlacidlo import Tlacidlo
 
 
 class HlavneMenu(Scena):
@@ -21,10 +22,15 @@ class HlavneMenu(Scena):
         nastavenia_tlacidlo = Tlacidlo(stred, "Nastavenia", lambda: self.zmen_scenu(1))
         nastavenia_tlacidlo.rect.center = stred
 
-        ukonci_tlacidlo = Tlacidlo(stred, "Ukončiť", lambda: pygame.event.post(pygame.event.Event(pygame.QUIT)))
+        ukonci_tlacidlo = Tlacidlo(
+            stred, "Ukončiť", lambda: pygame.event.post(pygame.event.Event(pygame.QUIT))
+        )
         ukonci_tlacidlo.rect.center = (
             stred[0],
             stred[1] + nastavenia_tlacidlo.rect.height + 20,
         )
 
         super().__init__(hrat_tlacidlo, nastavenia_tlacidlo, ukonci_tlacidlo)
+
+    def pred_zmenou(self):
+        Mixer.prehrat_pozadie()

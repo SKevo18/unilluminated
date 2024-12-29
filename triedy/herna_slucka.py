@@ -8,10 +8,12 @@ import asyncio
 import pygame
 
 import nastavenia as n
-from triedy.scena import ManazerScen, HlavneMenu, Nastavenia
-from triedy.scena.levely import Level
-from triedy.sprite.sprite import Sprite
-from triedy.sprite.entity.priamociara_prisera import PriamociaraPrisera
+from triedy.mixer import Mixer
+from triedy.sceny.manazer_scen import ManazerScen
+from triedy.sceny.levely.level import Level
+from triedy.sceny.hlavne_menu import HlavneMenu
+from triedy.sceny.nastavenia import Nastavenia
+from triedy.sprity.sprite import Sprite
 
 
 class HernaSlucka:
@@ -56,7 +58,10 @@ class HernaSlucka:
         pygame.init()
         pygame.font.init()
         pygame.display.init()
+        pygame.mixer.init()
+
         pygame.display.set_caption(n.NAZOV_HRY)
+        Mixer.nacitat_zvuky()
         HernaSlucka.nacitat_sceny()
 
     @staticmethod
@@ -85,7 +90,8 @@ class HernaSlucka:
     @staticmethod
     def spracuj_eventy(eventy: t.List[pygame.event.Event]) -> bool:
         """
-        Pomocná funkcia pre spracovanie eventov. Ak vráti `False`, hlavná herná slučka sa zastaví (t. j. hru sme ukončili).
+        Pomocná funkcia pre spracovanie eventov.
+        Ak vráti `False`, hlavná herná slučka sa zastaví (t. j. hru sme ukončili).
         """
 
         for event in eventy:

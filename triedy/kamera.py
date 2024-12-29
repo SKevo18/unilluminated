@@ -5,7 +5,7 @@ Modul pre kameru.
 import typing as t
 
 if t.TYPE_CHECKING:
-    from triedy.sprite.entity.entita import Entita
+    from triedy.sprity.entity.entita import Entita
 
 import pygame
 

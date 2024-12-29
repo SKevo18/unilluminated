@@ -3,7 +3,9 @@ from pathlib import Path
 
 import pygame
 
-from triedy.sprite import Sprite
+import nastavenia as n
+from triedy.mixer import Mixer
+from triedy.sprity.sprite import Sprite
 
 
 class Tlacidlo(Sprite):
@@ -16,7 +18,7 @@ class Tlacidlo(Sprite):
         pozicia: t.Tuple[int, int],
         text: str,
         po_kliknuti: t.Callable[[], t.Any],
-        velkost = (200, 100),
+        velkost=(200, 100),
         velkost_textu: t.Optional[int] = None,
     ):
         super().__init__(pozicia, velkost, Path("ui") / "tlacidlo.png")
@@ -28,7 +30,7 @@ class Tlacidlo(Sprite):
         self.obrazok_kliknute = self.nacitaj_obrazok(Path("ui") / "tlacidlo_klik.png")
         self.obrazok_hover = self.nacitaj_obrazok(Path("ui") / "tlacidlo_hover.png")
         self.text = pygame.font.Font(
-            self.ASSETY_ROOT / "FiraCode.ttf", self.velkost_textu
+            n.ASSETY_ROOT / "FiraCode.ttf", self.velkost_textu
         ).render(text, False, (0, 0, 0))
 
     def update(self):
@@ -52,6 +54,7 @@ class Tlacidlo(Sprite):
             self.image = self.obrazok_original
 
             if self.rect.collidepoint(event.pos):  # ak sme si to nerozmysleli
+                Mixer.prehrat_zvuk("poloz")
                 self.po_kliknuti()
         elif event.type == pygame.MOUSEMOTION:  # pohyb myši
             if self.kliknute:

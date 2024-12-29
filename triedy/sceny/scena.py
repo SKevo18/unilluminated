@@ -2,8 +2,8 @@ import typing as t
 
 import pygame
 
-from triedy.sprite.sprite import Sprite
-from triedy.scena.manazer_scen import ManazerScen
+from triedy.sceny.manazer_scen import ManazerScen
+from triedy.sprity.sprite import Sprite
 
 
 class Scena(pygame.sprite.Group):

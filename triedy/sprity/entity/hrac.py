@@ -1,13 +1,15 @@
 import typing as t
 
 if t.TYPE_CHECKING:
-    from triedy.scena import Scena
+    from triedy.sceny.scena import Scena
 
 import pygame
 
-from triedy.sprite.entity.svetelna_entita import SvetelnaEntita
-from triedy.sprite.entity.fakla import Fakla
+import nastavenia as n
+from triedy.mixer import Mixer
 from triedy.kamera import Kamera
+from triedy.sprity.entity.fakla import Fakla
+from triedy.sprity.entity.svetelna_entita import SvetelnaEntita
 
 
 class Hrac(SvetelnaEntita):
@@ -18,7 +20,7 @@ class Hrac(SvetelnaEntita):
     def __init__(self, pozicia: t.Tuple[int, int]):
         super().__init__(
             pozicia,
-            self.ASSETY_ROOT / "sprite" / "hrac",
+            n.ASSETY_ROOT / "sprite" / "hrac",
             # prevolene je animácia behu, ktorá sa iba pozastaví ak sa hráč nepohybuje:
             animacia_id="bez",
             rychlost=0.5,
@@ -26,6 +28,8 @@ class Hrac(SvetelnaEntita):
 
         self.hp = 100
         """Zdravie hráča."""
+        self.aktualny_zvuk_krokov = None
+        """Zvuk krokov, ktorý sa momentálne prehráva (ak prestaneme chodiť, zastavíme aj tento zvuk)"""
 
     def spracuj_event(self, event: pygame.event.Event, aktualna_scena: "Scena"):
         if event.type == pygame.KEYDOWN:
@@ -49,11 +53,12 @@ class Hrac(SvetelnaEntita):
 
             # položenie fakle
             elif event.key == pygame.K_SPACE:
-                # nemôžme položiť faklu ak pokladáme alebo berieme inú
+                # nemôžme položiť faklu, ak pokladáme alebo berieme inú
                 if self.id_aktualnej_animacie == "poloz":
                     return
 
-                # animácia
+                # animácia a zvuk
+                Mixer.prehrat_zvuk("poloz")
                 self.prehrat_animaciu("poloz")
 
                 # ak je neďaleko fakľa, odobereme ju
@@ -90,7 +95,17 @@ class Hrac(SvetelnaEntita):
         # napr. ak máme animáciu "poloz", tak sa hráč nemôže hýbať
         self.moze_ist = self.id_aktualnej_animacie == "bez" and pohybuje_sa
 
+        if self.moze_ist:
+            # ak sa pohybujeme, prehráme zvuk
+            zvuk = Mixer.prehrat_zvuk("kroky")
+            if zvuk:  # ak je `None`, znamená to že sa prehráva iný zvuk (t. j. zvuk krokov sa neprehral)
+                self.aktualny_zvuk_krokov = zvuk
+        elif self.aktualny_zvuk_krokov:
+            # inak, ak nechodíme a prehráva sa zvuk, zastavíme ho:
+            self.aktualny_zvuk_krokov.stop()
+
         # ak sa pohybujeme, animujeme pohyb
         # ak je animácia iná ako beh, prioritne prehrávame tú (napr. niečo položíme alebo útok a podobne)
         self.animuj = pohybuje_sa or self.id_aktualnej_animacie != "bez"
+
         return super().update()

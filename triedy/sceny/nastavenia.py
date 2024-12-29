@@ -1,6 +1,8 @@
 import nastavenia as n
-from triedy.scena import Scena
-from triedy.ui import ZaskrtavaciePole, Tlacidlo
+from triedy.mixer import Mixer
+from triedy.sceny.scena import Scena
+from triedy.ui.tlacidlo import Tlacidlo
+from triedy.ui.zaskrtavacie_pole import ZaskrtavaciePole
 
 
 class Nastavenia(Scena):
@@ -17,7 +19,7 @@ class Nastavenia(Scena):
             (poz_x, stred[1] - radius_zp * 5),
             radius_zp,
             "Zvuky",
-            lambda zaskrtnute: print("test zvuky:", zaskrtnute),
+            self.prepnut_zvuky,
             zaskrtnute=True,
         )
 
@@ -25,7 +27,7 @@ class Nastavenia(Scena):
             (poz_x, stred[1] - radius_zp * 2),
             radius_zp,
             "Hudba",
-            lambda zaskrtnute: print("test hudba:", zaskrtnute),
+            self.prepnut_hudbu,
             zaskrtnute=True,
         )
 
@@ -35,3 +37,16 @@ class Nastavenia(Scena):
             lambda: Scena.zmen_scenu(0),
         )
         super().__init__(zvuky_zp, hudba_zp, tlacidlo_spat)
+
+    @staticmethod
+    def prepnut_zvuky(zapnute: bool):
+        Mixer.zvuky_povolene = zapnute
+
+    @staticmethod
+    def prepnut_hudbu(zapnute: bool):
+        Mixer.hudba_povolena = zapnute
+
+        if zapnute:
+            Mixer.prehrat_pozadie()
+        else:
+            Mixer.stop_pozadie()

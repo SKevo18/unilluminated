@@ -1,11 +1,11 @@
 import typing as t
-
-import pygame
 from pathlib import Path
 
+import pygame
 from pygame.event import Event
 
-from triedy.sprite import Sprite
+from triedy.mixer import Mixer
+from triedy.sprity.sprite import Sprite
 from triedy.ui.text import Text
 
 
@@ -65,6 +65,7 @@ class ZaskrtavaciePoleBox(Sprite):
     def prepni(self):
         self.je_zaskrtnute = not self.je_zaskrtnute
         self.po_kliknuti(self.je_zaskrtnute)
+        Mixer.prehrat_zvuk("poloz")
 
     def spracuj_event(self, event: Event, _):
         if event.type == pygame.MOUSEBUTTONDOWN:

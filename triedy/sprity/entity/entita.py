@@ -1,9 +1,9 @@
 import typing as t
-
 from pathlib import Path
+
 import pygame
 
-from triedy.sprite.animovany_sprite import AnimovanySprite
+from triedy.sprity.animovany_sprite import AnimovanySprite
 
 
 class Entita(AnimovanySprite):
@@ -16,7 +16,7 @@ class Entita(AnimovanySprite):
         pozicia: t.Tuple[int, int],
         root_priecinok_animacii: t.Union[Path, str],
         velkost=(16, 16),
-        animacia_id: str = "chill",
+        animacia_id= "chill",
         # rýchlosť vyššia ako 1 spôsobí, že detekcia kolízií nebude fungovať
         # (preskočia sa framy):
         rychlost=0.2,

@@ -2,7 +2,7 @@ import typing as t
 
 # aby nebol circular import - scena importuje manazera aby zmenila scenu
 if t.TYPE_CHECKING:
-    from triedy.scena.scena import Scena
+    from triedy.sceny.scena import Scena
 
 import pygame
 

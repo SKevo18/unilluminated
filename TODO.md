@@ -1,12 +1,12 @@
 # TODO
 
-- [ ] UI overlay
+- [x] UI overlay
 - [x] Príšery
   - [x] Fix pohybu príšer
-- [x] Podpora pre viaceré animácie v rámci jednej entity
-- [ ] Attack cez Shift
-- [ ] Hudba + zvuky cez `pygame.mixer`
+- [x] Podpora pre viaceré animácie vrámci jednej entity
 - [ ] Kľúč + prechod na ďalší level
+- [x] Hudba + zvuky cez `pygame.mixer`
+  - [x] Fungujúce zapnutie/vypnutie zvukov
 - [ ] uložiť/načítať hru a nastavenia
 
-- [ ] Odstrániť __init__.py odvšade, je to nekonzistentné a nepoužívam to vždy
+- [x] Odstrániť __init__.py odvšade, je to nekonzistentné a nepoužívam to vždy

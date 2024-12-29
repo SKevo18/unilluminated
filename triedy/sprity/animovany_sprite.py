@@ -3,7 +3,7 @@ from pathlib import Path
 
 import pygame
 
-from triedy.sprite.sprite import Sprite
+from triedy.sprity.sprite import Sprite
 
 
 class AnimovanySprite(Sprite):
