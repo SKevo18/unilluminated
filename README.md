@@ -65,20 +65,40 @@ Hráč po kontakte s ľubovolnou príšerou stratí jeden život, pričom v kaž
 Nasledujúce priečinky obsahujú viacero tried, ktoré iba stručne popíšem (pre konkrétnu technickú dokumentáciu si prosím prečítajte komentáre a docstringy ktoré sú dostupné v daných zdrojových kódoch spomínaných tried):
 
 - [`sceny`](./triedy/sceny/) - obsahuje rodiča `Scena`, ktorá predstavuje jednu scénu (panel) v hre. Scény možno meniť, napr. hlavné menu je samostatná scéna, menu s nastaveniami je iná, a podobne;
+  - [`levely`](./triedy/sceny/levely/) - trieda `Level` obsahuje hlavnú hernú logiku, slučku levelu (kontrolu kolízií, parsovanie levelu a podobne);
 - [`sprity`](./triedy/sprity/) - obsahuje rodiča `Sprite`, čo predstavuje nejaký obrázok vykresľovaný na scéne (obsahuje potomkov, ako napr.: `AnimovanySprite`, ktorý podporuje animácie);
+  - [`entity`](./triedy/sprity/entity/) - `Entita` je všetko, s čím sa dá v leveli interagovať, či už v dobrom alebo v zlom (`Fakla`, `Prisera`, `Dvere` a podobne);
+- [`ui`](./triedy/ui/) - UI elementy (`Tlacidlo`, `ZaskrtavaciePole`, `Text` a podobne);
 
 ![UML diagram](readme/classes.png)
 
 <p align="center"><b>Figúra č. 3:</b> UML diagram, generovaný pomocou <a href="https://pylint.readthedocs.io/en/latest/additional_tools/pyreverse/index.html">pyreverse</a>.</p>
 
-## 3. Assety
+## 3. Použité assety
+
+Assety som čerpal z voľne dostupných zdrojov na internete, zvyšok čo tu nie je popísané som vytvoril sám. V rámci funkčného prototypu som nehľadal najlepší možný dizajn, ale taký, ktorý je dostatočne prívetivý pre testerov hry.
 
 - [Damp Dungeon Tileset](https://pine-druid.itch.io/damp-dungeon-tileset-and-sprites)
 - [Fira Code (Font)](https://github.com/tonsky/FiraCode)
 - Zvukové efekty od [freesound_community (Pixabay)](https://pixabay.com/users/46691455)
 - Hudba na pozadí od [Suno AI](https://suno.com/)
 
-## 4. Gameplay video
+## 4. Herný zážitok
+
+### 4.1 Používateľské rozhranie
+
+UI je jednoduché - hlavná obrazovka obsahuje možnosť začat hru, menu s nastaveniami (kde sa dajú zapnúť a vypnúť zvuky alebo hudba v pozadí) a možnosť hru ukončiť. Taktiež je tu menu s možnosťami návratu do hlavného menu alebo ukončenia hry v prípade že bol stlačený kláves `Escape` alebo hráča premohli nepriatelia.
+
+### 4.2 Ovládanie
+
+Hráč ovláda postavu pomocou <ins>klávesnice</ins>.
+
+- **Pohyb:** šípkami vo všetkých 8 smeroch (priamo alebo diagonálne);
+- **Položenie/zobratie fakle:** medzerník (`Space`);
+
+Interakcie s truhlou a dvermi sú automatické - stačí, ak sa k ním hráč priblíži.
+
+## 5. Gameplay video
 
 [![Gameplay video](https://img.youtube.com/vi/PRYxeDCJFS4/0.jpg)](https://youtu.be/PRYxeDCJFS4)
 
