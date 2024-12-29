@@ -6,10 +6,13 @@ if t.TYPE_CHECKING:
 import pygame
 
 import nastavenia as n
-from triedy.mixer import Mixer
 from triedy.kamera import Kamera
+from triedy.mixer import Mixer
 from triedy.sprity.entity.fakla import Fakla
 from triedy.sprity.entity.svetelna_entita import SvetelnaEntita
+from triedy.ui.fakle_pocitadlo import FaklePocitadlo
+from triedy.ui.srdcia_pocitadlo import SrdciaPocitadlo
+from triedy.ui.zobraty_kluc import ZobratyKluc
 
 
 class Hrac(SvetelnaEntita):
@@ -34,6 +37,13 @@ class Hrac(SvetelnaEntita):
         """Odpočítava sa každý frame, ak je viac ako 1, hráč nemôže stratiť život."""
         self.aktualny_zvuk_krokov = None
         """Zvuk krokov, ktorý sa momentálne prehráva (ak prestaneme chodiť, zastavíme aj tento zvuk)"""
+
+        self.pocitadlo_zivotov = SrdciaPocitadlo((10, 10), pocet_srdc=3)
+        """Objekt pre zobrazenie životov. Predvolene 3 - mení sa iba vtedy, ak sa hráč zraní."""
+        self.pocitadlo_fakli = FaklePocitadlo((10, 32))
+        """Objekt pre zobrazovanie počtu faklí."""
+        self.zobraty_kluc = ZobratyKluc()
+        """Zobrazí sa, ak hráč zoberie kľúč."""
 
     def spracuj_event(self, event: pygame.event.Event, aktualna_scena: "Scena"):
         if event.type == pygame.KEYDOWN:
@@ -61,17 +71,18 @@ class Hrac(SvetelnaEntita):
                 if self.id_aktualnej_animacie == "poloz":
                     return
 
-                # animácia a zvuk
-                Mixer.prehrat_zvuk("poloz")
-                self.prehrat_animaciu("poloz")
-
                 # ak je neďaleko fakľa, odobereme ju
                 for sprite in aktualna_scena.sprites():
                     if isinstance(sprite, Fakla) and sprite.rect.colliderect(self.rect):
                         aktualna_scena.remove(sprite)
+                        self.pocitadlo_fakli.pocet_fakli += 1
                         break
-                # inak položíme novú, zarovnanú podľa mriežky
+
+                # nie sme neďaleko žiadnej fakle - položíme novú, zarovnanú podľa mriežky:
                 else:
+                    if self.pocitadlo_fakli.pocet_fakli <= 0:
+                        return  # nepokračujeme ďalej, aby sa neprehral ani zvuk na konci
+
                     podla_mriezky = (
                         (self.rect.centerx // aktualna_scena.velkost_spritu)
                         * aktualna_scena.velkost_spritu,
@@ -79,6 +90,11 @@ class Hrac(SvetelnaEntita):
                         * aktualna_scena.velkost_spritu,
                     )
                     aktualna_scena.add(Fakla(podla_mriezky))
+                    self.pocitadlo_fakli.pocet_fakli -= 1
+
+                # animácia a zvuk
+                Mixer.prehrat_zvuk("poloz")
+                self.prehrat_animaciu("poloz")
 
         elif event.type == pygame.KEYUP:
             # pohyb - zastavíme, iba ak sme sa pohybovali tým smerom
@@ -105,6 +121,7 @@ class Hrac(SvetelnaEntita):
         self.cas_nesmrtelnosti = 40
         self.svetlo.farba = (255, 100, 0)  # aby sme vedeli že hráč sa zranil
         self.zivoty -= 1
+        self.pocitadlo_zivotov.pocet_srdc = self.zivoty
         Mixer.prehrat_zvuk("ublizenie")
 
         return True

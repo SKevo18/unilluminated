@@ -11,7 +11,7 @@ class SrdciaPocitadlo(pygame.sprite.Group):
     Počítadlo sŕdc zobrazené ako rad obrázkov.
     """
 
-    def __init__(self, pozicia: t.Tuple[int, int], pocet_srdc=2):
+    def __init__(self, pozicia: t.Tuple[int, int], pocet_srdc=3):
         self.pozicia = pozicia
         self._pocet_srdc = pocet_srdc
 
@@ -29,6 +29,10 @@ class SrdciaPocitadlo(pygame.sprite.Group):
             )
             srdcia.append(srdce)
         return srdcia
+
+    def draw(self, surface: pygame.Surface):
+        for srdce in self.srdcia:
+            surface.blit(srdce.image, srdce.rect)
 
     @property
     def pocet_srdc(self) -> int:

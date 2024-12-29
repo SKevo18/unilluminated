@@ -16,13 +16,12 @@ class Scena(pygame.sprite.Group):
         self.velkost_spritu = 16
         """Veľkosť jedného sprite v pixeloch, predvolene 16."""
 
-        self.ui_elementy = pygame.sprite.Group()
+        self.ui_elementy: t.List[t.Union[Sprite, pygame.sprite.Group]] = []
         """Skupina UI elementov."""
 
     @staticmethod
     def zmen_scenu(index: int):
         ManazerScen.zmen_scenu(index)
-    
 
     @staticmethod
     def aktualny_index_sceny():

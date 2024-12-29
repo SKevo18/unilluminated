@@ -52,8 +52,9 @@ class HernaSlucka:
     @staticmethod
     def initializuj():
         """
-        Inicializuje pyGame a načíta všetky scény.
+        Inicializuje pyGame a načíta všetky assety + scény.
         """
+
         pygame.init()
         pygame.font.init()
         pygame.display.init()
@@ -95,14 +96,14 @@ class HernaSlucka:
     def spracuj_eventy(eventy: t.List[pygame.event.Event]) -> bool:
         """
         Pomocná funkcia pre spracovanie eventov.
-        Ak vráti `False`, hlavná herná slučka sa zastaví (t. j. hru sme ukončili).
         """
 
         for event in eventy:
-            if event.type == pygame.QUIT or (
-                event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE
-            ):
-                return False  # ukončenie hry
+            if event.type == pygame.QUIT:
+                return False  # ukončiť hru
+            elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                ManazerScen.zmen_scenu(-1)  # koniec hry
+                break
             else:
                 for sprite in ManazerScen.aktualna_scena().sprites():
                     if isinstance(sprite, Sprite):
