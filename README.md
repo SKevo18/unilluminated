@@ -50,6 +50,6 @@ Príšery sa v aktuálnej verzii prototypu nedajú žiadnym spôsobom zničiť. 
 
 Hráč po kontakte s ľubovolnou príšerou stratí jeden život, pričom v každom leveli má k dispozícií maximálne 3 - ak stratí všetky, celá hra končí.
 
-![Gameplay](readme/gameplay.mov)
+[![Gameplay video](https://img.youtube.com/vi/PRYxeDCJFS4/0.jpg)](https://youtu.be/PRYxeDCJFS4)
 
-<p align="center"><b>Figúra č. 3:</b> Gameplay video prototypu.</p>
+<p align="center"><b>Figúra č. 3:</b> <a href="https://youtu.be/PRYxeDCJFS4">Gameplay video</a> prototypu.</p>
