@@ -3,6 +3,7 @@ import pytmx
 
 import nastavenia as n
 from triedy.kamera import Kamera
+from triedy.mixer import Mixer
 from triedy.sceny.scena import Scena
 from triedy.sprity.entity.dvere import Dvere
 from triedy.sprity.entity.entita import Entita
@@ -124,6 +125,7 @@ class Level(Scena):
         self.entity.empty()
         self.hrac.zivoty = 3
         self.ui_elementy.clear()
+        Mixer.zastavit_zvuky()  # aby sa napr. kroky neprehrávali donekonečna
 
     def update(self):
         if not self.hrac:

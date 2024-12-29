@@ -37,7 +37,7 @@ class Mixer:
             zvuk.stop()
 
     @staticmethod
-    def prehrat_zvuk(id: str) -> t.Optional[pygame.mixer.Channel]:
+    def prehrat_zvuk(id: str, *args, **kwargs) -> t.Optional[pygame.mixer.Channel]:
         """
         Prehrá určitý zvuk jedenkrát.
         """
@@ -50,10 +50,10 @@ class Mixer:
         except KeyError:
             raise ValueError(f"Zvuk s ID `{id}` neexistuje!")
 
-        return zvuk.play()
+        return zvuk.play(*args, **kwargs)
 
     @staticmethod
-    def prehrat_pozadie():
+    def prehrat_pozadie(*args, **kwargs):
         """
         Začne prehrávať hudbu na pozadí
         """
@@ -65,7 +65,7 @@ class Mixer:
 
         pygame.mixer.music.load(Mixer.HUDBA_POZADIE)
         pygame.mixer.music.set_volume(0.5)
-        pygame.mixer.music.play(loops=-1, fade_ms=1000)
+        pygame.mixer.music.play(loops=-1, fade_ms=1000, *args, **kwargs)
 
     @staticmethod
     def stop_pozadie():

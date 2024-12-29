@@ -142,7 +142,7 @@ class Hrac(SvetelnaEntita):
 
         if self.moze_ist:
             if not self.aktualny_zvuk_krokov:
-                self.aktualny_zvuk_krokov = Mixer.prehrat_zvuk("kroky")
+                self.aktualny_zvuk_krokov = Mixer.prehrat_zvuk("kroky", loops=-1)
         elif self.aktualny_zvuk_krokov:
             self.aktualny_zvuk_krokov.stop()
             self.aktualny_zvuk_krokov = None

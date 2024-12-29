@@ -49,3 +49,7 @@ Pre tému "Dark and light" som zvolil mechaniku toho, že hráč zakaždým vid�
 Príšery sa v aktuálnej verzii prototypu nedajú žiadnym spôsobom zničiť. Jediným spôsobom ako sa zachrániť, je nájsť kľúč v truhle ktorá sa nachádza v niektorej neosvetlenej časti levelu a potom ísť za modrým svetlom, ktoré vyžaruje z dverí do ďalšieho levelu. Dvere sa môžu otvoriť iba pomocou vyššie spomínaného kľúča.
 
 Hráč po kontakte s ľubovolnou príšerou stratí jeden život, pričom v každom leveli má k dispozícií maximálne 3 - ak stratí všetky, celá hra končí.
+
+![Gameplay](readme/gameplay.mov)
+
+<p align="center"><b>Figúra č. 3:</b> Gameplay video prototypu.</p>
