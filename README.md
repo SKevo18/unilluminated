@@ -103,3 +103,7 @@ Interakcie s truhlou a dvermi sú automatické - stačí, ak sa k ním hráč pr
 [![Gameplay video](https://img.youtube.com/vi/PRYxeDCJFS4/0.jpg)](https://youtu.be/PRYxeDCJFS4)
 
 <p align="center"><b>Figúra č. 4:</b> <a href="https://youtu.be/PRYxeDCJFS4">Gameplay video</a> prototypu.</p>
+
+## 6. Stiahnutie
+
+Prototyp hry je k dispozícií k stiahnutiu ako [release](https://github.com/SKevo18/ot_pygame_projekt_2024/releases).
