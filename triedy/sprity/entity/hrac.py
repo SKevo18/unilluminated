@@ -1,8 +1,4 @@
 import typing as t
-
-if t.TYPE_CHECKING:
-    from triedy.sceny.scena import Scena
-
 import pygame
 
 import nastavenia as n
@@ -14,10 +10,13 @@ from triedy.ui.fakle_pocitadlo import FaklePocitadlo
 from triedy.ui.srdcia_pocitadlo import SrdciaPocitadlo
 from triedy.ui.zobraty_kluc import ZobratyKluc
 
+# šanca na cyklický import, preto na konci:
+from triedy.sceny.scena import Scena
+
 
 class Hrac(SvetelnaEntita):
     """
-    Hlavná postava hry.
+    Hlavná postava hry, ovládaná šípkami.
     """
 
     def __init__(self, pozicia: t.Tuple[int, int]):
@@ -59,12 +58,6 @@ class Hrac(SvetelnaEntita):
             elif event.key == pygame.K_DOWN:
                 self.velocita.y = 1 * self.rychlost
 
-            # približovanie kamery
-            elif event.key == pygame.K_p:
-                Kamera.zmen_priblizenie(0.5)
-            elif event.key == pygame.K_o:
-                Kamera.zmen_priblizenie(-0.5)
-
             # položenie fakle
             elif event.key == pygame.K_SPACE:
                 # nemôžme položiť faklu, ak pokladáme alebo berieme inú
@@ -95,6 +88,16 @@ class Hrac(SvetelnaEntita):
                 # animácia a zvuk
                 Mixer.prehrat_zvuk("poloz")
                 self.prehrat_animaciu("poloz")
+        
+            # približovanie kamery
+            elif event.key == pygame.K_p:
+                Kamera.zmen_priblizenie(0.5)
+            elif event.key == pygame.K_o:
+                Kamera.zmen_priblizenie(-0.5)
+            
+            # reštart aktuálnej scény (levelu)
+            elif event.key == pygame.K_r:
+                Scena.restartovat()
 
         elif event.type == pygame.KEYUP:
             # pohyb - zastavíme, iba ak sme sa pohybovali tým smerom

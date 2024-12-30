@@ -12,9 +12,9 @@ Repozitár obsahuje prototyp hry "Unilluminated", ktorá je mojim semestrálnym 
 
 Pre môj projekt som si zvolil tému "Dark and light" (tma a svetlo). V hre sa hráč nachádza v temných kobkách, kde jediným zdrojom svetla je lúč ktorý vyžaruje okolo seba, pár pochodní. Na hrdinu tam čakajú aj príšery, niektoré ho naháňajú, iné iba chodia náhodným smerom a dúfajú, že hráča chytia. Cieľom v každom leveli je nájsť truhlu s kľúčom, ktorý sa následne použije pre otvorenie dverí - a samozrejme, vyhnúť sa príšerám, inak celá hra končí.
 
-![Snímka finálnej hry](readme/hra.png)
+![Snímka skorého prototypu hry počas vývoja](readme/hra.png)
 
-<p align="center"><b>Figúra č. 1:</b> Snímka prototypu hry.</p>
+<p align="center"><b>Figúra č. 1:</b> Snímka skorého prototypu hry počas vývoja.</p>
 
 ### 1.1 Inšpirácia
 
@@ -91,18 +91,22 @@ UI je jednoduché - hlavná obrazovka obsahuje možnosť začat hru, menu s nast
 
 ### 4.2 Ovládanie
 
-Hráč ovláda postavu pomocou <ins>klávesnice</ins>.
+Hráč ovláda postavu pomocou <ins>klávesnice</ins>:
 
 - **Pohyb:** šípkami vo všetkých 8 smeroch (priamo alebo diagonálne);
 - **Položenie/zobratie fakle:** medzerník (`Space`);
+- **Koniec hry/návrat do menu:** Escape
+- **Reštart aktuálneho levelu:** R
+- **Priblíženie kamery:** P
+- **Oddialenie kamery:** O
 
-Interakcie s truhlou a dvermi sú automatické - stačí, ak sa k ním hráč priblíži.
+Interakcie s truhlou a dvermi sú automatické - stačí, ak sa k ním hráč priblíži (pre odomknutie dverí je potrebné mať so sebou kľúč).
 
 ## 5. Gameplay video
 
-[![Gameplay video](https://img.youtube.com/vi/PRYxeDCJFS4/0.jpg)](https://youtu.be/PRYxeDCJFS4)
+[![Gameplay video prototypu počas vývoja](https://img.youtube.com/vi/PRYxeDCJFS4/0.jpg)](https://youtu.be/PRYxeDCJFS4)
 
-<p align="center"><b>Figúra č. 4:</b> <a href="https://youtu.be/PRYxeDCJFS4">Gameplay video</a> prototypu.</p>
+<p align="center"><b>Figúra č. 4:</b> <a href="https://youtu.be/PRYxeDCJFS4">Gameplay video</a> prototypu počas vývoja.</p>
 
 ## 6. Stiahnutie
 

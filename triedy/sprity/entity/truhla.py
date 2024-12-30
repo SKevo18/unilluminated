@@ -6,6 +6,10 @@ from triedy.sprity.entity.entita import Entita
 
 
 class Truhla(Entita):
+    """
+    Ak sa hráč priblíži k truhle, otvorí sa a hráč zoberie kľúč od dverí.
+    """
+
     def __init__(self, pozicia: t.Tuple[int, int]):
         super().__init__(
             pozicia,
@@ -24,6 +28,7 @@ class Truhla(Entita):
             Mixer.prehrat_zvuk("otvor")
             return True
 
+        # nemôžme otvoriť už otvorenú truhlu
         return False
 
     @property

@@ -27,6 +27,10 @@ class Scena(pygame.sprite.Group):
     def aktualny_index_sceny():
         return ManazerScen.index_aktualnej_sceny
 
+    @staticmethod
+    def restartovat():
+        return Scena.zmen_scenu(Scena.aktualny_index_sceny())
+
     def pred_zmenou(self):
         """
         Funkcia, ktorá sa spustí pred zmenou scény.

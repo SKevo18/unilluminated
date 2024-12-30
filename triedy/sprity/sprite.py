@@ -11,7 +11,8 @@ import nastavenia as n
 
 class Sprite(pygame.sprite.Sprite):
     """
-    Predstavuje všetky objekty v hre.
+    Predstavuje všetky objekty v hre ktoré majú nejaký obrázok.
+    Táto trieda neimplementuje interaktivitu medzi nimi, ale zabezpečuje základ všetkých herných objektov.
     """
 
     def __init__(

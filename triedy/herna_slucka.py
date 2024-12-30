@@ -88,6 +88,7 @@ class HernaSlucka:
             HlavneMenu(),
             Nastavenia(),
             Level("level_1"),
+            Level("level_2"),
             KoniecHry(),
         ]
         ManazerScen.zmen_scenu(0)

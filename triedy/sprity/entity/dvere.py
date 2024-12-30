@@ -6,6 +6,10 @@ from triedy.sprity.entity.svetelna_entita import SvetelnaEntita
 
 
 class Dvere(SvetelnaEntita):
+    """
+    Dvere do ďalšieho levelu, ktoré potrebujú kľúč na odomknutie. Sú solidné.
+    """
+
     def __init__(self, pozicia: t.Tuple[int, int]):
         super().__init__(
             pozicia,

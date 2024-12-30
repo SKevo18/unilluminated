@@ -5,6 +5,11 @@ from triedy.sprity.entity.svetelna_entita import SvetelnaEntita
 
 
 class Fakla(SvetelnaEntita):
+    """
+    Pochodeň, ktorá vyžaruje (emituje) svetlo.
+    Hráč ju môže položiť prostredníctvom "Space" (medzerníku).
+    """
+
     def __init__(self, pozicia: t.Tuple[int, int]):
         super().__init__(
             pozicia,

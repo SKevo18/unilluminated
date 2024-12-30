@@ -8,7 +8,7 @@ from triedy.sprity.sprite import Sprite
 
 class AnimovanySprite(Sprite):
     """
-    Predstavuje animovaný sprite.
+    Predstavuje sprite, ktorý podporuje meniacu sa sekvenciu obrázkov pre tvorbu animácií.
     """
 
     CACHE_ANIMACII: t.Dict[str, t.Dict[str, t.List[pygame.Surface]]] = {}
@@ -19,6 +19,7 @@ class AnimovanySprite(Sprite):
         root_priecinok_animacii: t.Union[Path, str],
         velkost=(16, 16),
         animacia_id="chill",
+        rychlost_animacie=10
     ):
         super().__init__(pozicia, velkost, None)
         self.root_priecinok = str(root_priecinok_animacii)
@@ -26,6 +27,8 @@ class AnimovanySprite(Sprite):
         """ID aktuálnej animácie ktorá sa prehráva."""
         self.animuj = True
         """Ak je `True`, obrázky sa menia v metóde `update()`."""
+        self.rychlost_animacie = rychlost_animacie
+        """Rýchlosť, s akou sa jednotlivé obrázky menia."""
 
         self._aktualna_je_jednorazova = False
         """Ak je `True`, aktuálna animácia sa prehrá len jedenkrát."""
@@ -104,7 +107,7 @@ class AnimovanySprite(Sprite):
             self._cas_animacie += 1
 
         pocet_framov = len(self.animacie)
-        index = self._cas_animacie // 10 % pocet_framov
+        index = self._cas_animacie // self.rychlost_animacie % pocet_framov
 
         # kontrola ukončenia jednorazovej animácie - čakáme na koniec celej animácie
         if self._aktualna_je_jednorazova and self._cas_animacie >= pocet_framov * 10:

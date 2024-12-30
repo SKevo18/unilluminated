@@ -8,7 +8,7 @@ from triedy.sprity.animovany_sprite import AnimovanySprite
 
 class Entita(AnimovanySprite):
     """
-    Základná trieda pre všetky entity.
+    Základná trieda pre všetky entity - objekty, ktoré majú v leveli interaktivitu.
     """
 
     def __init__(

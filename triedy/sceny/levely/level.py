@@ -15,6 +15,7 @@ from triedy.sprity.entity.svetelna_entita import SvetelnaEntita
 from triedy.sprity.entity.truhla import Truhla
 from triedy.sprity.podlaha import Podlaha
 from triedy.sprity.stena import Stena
+from triedy.sprity.dekoracia import Dekoracia, DekoraciaZem
 
 
 class Level(Scena):
@@ -45,15 +46,29 @@ class Level(Scena):
         self.mapa = pytmx.load_pygame(str(self.LEVELY_ROOT / f"{self.mapa_id}.tmx"))
         self.velkost_spritu = self.mapa.tilewidth
 
-        podlaha: pytmx.TiledTileLayer = self.mapa.get_layer_by_name("podlaha")  # type: ignore
+        podlahy: pytmx.TiledTileLayer = self.mapa.get_layer_by_name("podlaha")  # type: ignore
+        dekoracie: pytmx.TiledTileLayer = self.mapa.get_layer_by_name("dekoracie")  # type: ignore
+        dekoracie_zem: pytmx.TiledTileLayer = self.mapa.get_layer_by_name("dekoracie_zem")  # type: ignore
         steny: pytmx.TiledTileLayer = self.mapa.get_layer_by_name("steny")  # type: ignore
         entity: pytmx.TiledObjectGroup = self.mapa.get_layer_by_name("entity")  # type: ignore
 
         # vytvorenie kociek podlahy:
-        for x, y, image in podlaha.tiles():
-            sprite = Podlaha((x * self.mapa.tilewidth, y * self.mapa.tileheight))
-            sprite.image = image
-            self.add(sprite)
+        for x, y, image in podlahy.tiles():
+            podlaha = Podlaha((x * self.mapa.tilewidth, y * self.mapa.tileheight))
+            podlaha.image = image
+            self.add(podlaha)
+    
+        # dekorácie nemajú kolíziu
+        for x, y, image in dekoracie.tiles():
+            dekoracia = Dekoracia((x * self.mapa.tilewidth, y * self.mapa.tileheight))
+            dekoracia.image = image
+            self.add(dekoracia)
+    
+        # dekorácie na zemi nemajú "hĺbku"
+        for x, y, image in dekoracie_zem.tiles():
+            dekoracia_zem = DekoraciaZem((x * self.mapa.tilewidth, y * self.mapa.tileheight))
+            dekoracia_zem.image = image
+            self.add(dekoracia_zem)
 
         # vytvorenie dočasného povrchu pre steny
         # (z tohto sa neskôr vytvorí maska pre detekciu kolízií)
@@ -71,9 +86,9 @@ class Level(Scena):
         )
         for x, y, image in steny.tiles():
             pozicia = (x * self.mapa.tilewidth, y * self.mapa.tileheight)
-            sprite = Stena(pozicia)
-            sprite.image = image
-            self.add(sprite)
+            stena = Stena(pozicia)
+            stena.image = image
+            self.add(stena)
             maska_povrch.blit(maska_surface, pozicia)
 
         # spracovanie entít
@@ -86,7 +101,7 @@ class Level(Scena):
             elif obj.name == "odrazajuca_prisera":
                 self.entity.add(OdrazajucaPrisera((obj.x, obj.y)))
 
-            # solidné:
+            # solidné (majú masku):
             elif obj.name == "truhla":
                 self.entity.add(Truhla((obj.x, obj.y)))
                 maska_povrch.blit(maska_surface, (obj.x, obj.y))
@@ -166,7 +181,7 @@ class Level(Scena):
             if isinstance(entita, Prisera) and self.hrac.rect.colliderect(entita.rect):
                 if self.hrac.ublizit():
                     if self.hrac.zivoty <= 0:
-                        self.zmen_scenu(-1)  # posledná, KoniecHry
+                        self.restartovat()  # reštartovať aktuálny level
                 break
 
     def kontroluj_kolizie_s_truhlami(self):
@@ -208,7 +223,7 @@ class Level(Scena):
             key=lambda sprite: [
                 not isinstance(
                     sprite,
-                    Podlaha,  # podlaha sa vykresľuje vždy prvá
+                    (Podlaha, DekoraciaZem),  # podlaha a dekorácie na zemy sa vykresľujú vždy prvé
                 ),
                 # ...inak sa kreslí podľa Y súradnice
                 # pre ilúziu hĺbky
