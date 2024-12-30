@@ -110,4 +110,4 @@ Interakcie s truhlou a dvermi sú automatické - stačí, ak sa k ním hráč pr
 
 ## 6. Stiahnutie
 
-Prototyp hry je k dispozícií k stiahnutiu ako [release](https://github.com/SKevo18/ot_pygame_projekt_2024/releases).
+Prototyp hry je k dispozícií k stiahnutiu ako [release](https://github.com/SKevo18/unilluminated/releases).
