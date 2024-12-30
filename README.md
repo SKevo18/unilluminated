@@ -106,7 +106,7 @@ Interakcie s truhlou a dvermi sú automatické - stačí, ak sa k ním hráč pr
 
 [![Gameplay video prototypu počas vývoja](https://img.youtube.com/vi/PRYxeDCJFS4/0.jpg)](https://youtu.be/PRYxeDCJFS4)
 
-<p align="center"><b>Figúra č. 4:</b> <a href="https://youtu.be/PRYxeDCJFS4">Gameplay video</a> prototypu počas vývoja.</p>
+<p align="center"><b>Figúra č. 4:</b> <a href="https://youtu.be/PRYxeDCJFS4">Gameplay video</a> prototypu počas vývoja (*pozn.: nezodpovedá aktuálnemu stavu hry*).</p>
 
 ## 6. Stiahnutie
 
