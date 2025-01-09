@@ -49,10 +49,10 @@ class Hrac(SvetelnaEntita):
             # pohyb
             if event.key == pygame.K_LEFT:
                 self.velocita.x = -1 * self.rychlost
-                self.je_otoceny = False
+                self.je_otoceny = True
             elif event.key == pygame.K_RIGHT:
                 self.velocita.x = 1 * self.rychlost
-                self.je_otoceny = True
+                self.je_otoceny = False
             elif event.key == pygame.K_UP:
                 self.velocita.y = -1 * self.rychlost
             elif event.key == pygame.K_DOWN:

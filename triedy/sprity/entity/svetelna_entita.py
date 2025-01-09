@@ -15,7 +15,7 @@ class SvetelnaEntita(Entita):
         pozicia: t.Tuple[int, int],
         root_priecinok_animacii: t.Union[Path, str],
         velkost=(16, 16),
-        animacia_id="chill",
+        animacia_id="zakladna",
         rychlost=1.0,
         radius_svetla=80,
         rozsah_pulzovania=3,

@@ -31,7 +31,7 @@ class PriamociaraPrisera(Prisera):
             smer = pygame.Vector2(self.ciel) - pygame.Vector2(self.rect.center)
             if smer.length() > 0:
                 self.velocita = smer.normalize() * self.rychlost
-                self.je_otoceny = self.velocita.x > 0
+                self.je_otoceny = self.velocita.x < 0
             else:
                 self.velocita = pygame.Vector2(0, 0)
         return super().update()

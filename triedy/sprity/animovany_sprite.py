@@ -18,8 +18,8 @@ class AnimovanySprite(Sprite):
         pozicia: t.Tuple[int, int],
         root_priecinok_animacii: t.Union[Path, str],
         velkost=(16, 16),
-        animacia_id="chill",
-        rychlost_animacie=10
+        animacia_id="zakladna",
+        rychlost_animacie=10,
     ):
         super().__init__(pozicia, velkost, None)
         self.root_priecinok = str(root_priecinok_animacii)

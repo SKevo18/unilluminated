@@ -80,6 +80,7 @@ Assety som čerpal z voľne dostupných zdrojov na internete, zvyšok čo tu nie
 
 - [Damp Dungeon Tileset](https://pine-druid.itch.io/damp-dungeon-tileset-and-sprites)
 - [Fira Code (Font)](https://github.com/tonsky/FiraCode)
+- [Pixel Crawler](https://anokolisa.itch.io/dungeon-crawler-pixel-art-asset-pack)
 - Zvukové efekty od [freesound_community (Pixabay)](https://pixabay.com/users/46691455)
 - Hudba na pozadí od [Suno AI](https://suno.com/)
 

@@ -44,3 +44,6 @@ class OdrazajucaPrisera(Prisera):
 
         self.velocita = self.velocita.normalize() * self.rychlost
         self.rect.topleft = self.pozicia
+
+        # otocenie spritu
+        self.je_otoceny = self.velocita.x < 0

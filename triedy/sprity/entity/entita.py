@@ -16,7 +16,7 @@ class Entita(AnimovanySprite):
         pozicia: t.Tuple[int, int],
         root_priecinok_animacii: t.Union[Path, str],
         velkost=(16, 16),
-        animacia_id= "chill",
+        animacia_id="zakladna",
         # rýchlosť vyššia ako 1 spôsobí, že detekcia kolízií nebude fungovať
         # (preskočia sa framy):
         rychlost=0.2,

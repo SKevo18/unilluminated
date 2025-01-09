@@ -13,10 +13,9 @@ class Prisera(SvetelnaEntita):
         self,
         pozicia: t.Tuple[int, int],
         root_priecinok_animacii: t.Union[Path, str],
-        velkost=(16, 16),
-        animacia_id="chill",
+        velkost=(11, 16),
+        animacia_id="zakladna",
         rychlost=0.3,
-
         # predvolene neemituje svetlo
         radius_svetla=0,
         rozsah_pulzovania=0,
